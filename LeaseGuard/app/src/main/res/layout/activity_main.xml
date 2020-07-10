@@ -25,4 +25,9 @@
         android:layout_width="@dimen/standard_button_width"
         android:layout_height="@dimen/standard_button_height"
         android:id="@+id/button3" />
+
+    <Button
+        android:layout_width="@dimen/standard_button_width"
+        android:layout_height="@dimen/standard_button_height"
+        android:id="@+id/button4" />
 </LinearLayout>
