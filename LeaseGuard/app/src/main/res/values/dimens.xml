@@ -6,7 +6,14 @@
     <dimen name="standard_button_width">150dp</dimen>
     <dimen name="standard_button_height">50dp</dimen>
 
-    <dimen name="round_button_width">100dp</dimen>
-    <dimen name="round_button_height">100dp</dimen>
-    <dimen name="round_button_radius">50dp</dimen>
+    <dimen name="round_button_width">28dp</dimen>
+    <dimen name="round_button_height">28dp</dimen>
+    <dimen name="round_button_radius">14dp</dimen>
+
+    <dimen name="small_button_size">20dp</dimen>
+
+    <dimen name="menu_button_width">50dp</dimen>
+    <dimen name="menu_button_height">50dp</dimen>
+
+    <dimen name="generic_padding">8dp</dimen>
 </resources>
