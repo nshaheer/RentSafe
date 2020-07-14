@@ -1,5 +1,6 @@
 package com.leaseguard.leaseguard.landing
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import kotlinx.android.synthetic.main.card_document.view.*
 import javax.inject.Inject
 
 class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
+    private val LIBRARY_CODE = 1
 
     @Inject
     lateinit var safeRentViewModel : SafeRentActivityViewModel
@@ -23,17 +25,13 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_saferent)
-        floatingActionMenu.addItem("Google Drive", R.drawable.ic_folder,
-                View.OnClickListener {
-                    // TODO: open drive
-                })
-        floatingActionMenu.addItem("PDF", R.drawable.ic_pdf,
-                View.OnClickListener {
-                    // TODO: open pdf
-                })
+        
         floatingActionMenu.addItem("Library", R.drawable.ic_lib,
                 View.OnClickListener {
-                    // TODO: open library
+                    val intent = Intent()
+                            .setType("*/*")
+                            .setAction(Intent.ACTION_GET_CONTENT)
+                    startActivityForResult(Intent.createChooser(intent, "Select a file"), LIBRARY_CODE)
                 })
         floatingActionMenu.addItem("Photo", R.drawable.ic_camera,
                 View.OnClickListener {
@@ -89,5 +87,13 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
 
     override fun getViewModel(): SafeRentActivityViewModel {
         return safeRentViewModel
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == LIBRARY_CODE && resultCode == RESULT_OK) {
+            val resultFile = data?.data
+            safeRentViewModel.onFileSelected(resultFile)
+        }
     }
 }
