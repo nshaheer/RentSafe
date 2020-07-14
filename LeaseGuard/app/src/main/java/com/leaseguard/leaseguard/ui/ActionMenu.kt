@@ -42,7 +42,9 @@ class ActionMenu @JvmOverloads constructor(
     }
 
     fun addItem(label: String, resId: Int, onClickListener: OnClickListener) {
-        menuItems.add(MenuButton(context, label, resId))
+        menuItems.add(MenuButton(context, label, resId).apply {
+            setOnClickListener(onClickListener)
+        })
     }
 
     private fun toggleMenu() {
