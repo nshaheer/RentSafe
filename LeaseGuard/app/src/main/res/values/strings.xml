@@ -18,4 +18,5 @@
     <string name="photo_library">Photo Library</string>
     <string name="pdf">PDF</string>
     <string name="google_drive">Google Drive</string>
+    <string name="issues_found">issues found</string>
 </resources>

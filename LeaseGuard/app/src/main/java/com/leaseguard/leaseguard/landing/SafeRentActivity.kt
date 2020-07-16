@@ -1,13 +1,16 @@
 package com.leaseguard.leaseguard.landing
 
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -87,6 +90,7 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         safeRentViewModel.documentUpdated.observe(this, Observer { documents ->
             leaseList.clear()
             leaseList.addAll(documents)
+            Log.d("testdoc", documents.size.toString())
             viewAdapter.notifyDataSetChanged()
             if (leaseList.isNotEmpty()) {
                 noDocumentContainer.visibility = View.GONE
@@ -126,6 +130,14 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
                 view.card_address.text = leaseDocument.address
                 view.card_rent.text = "$" + leaseDocument.rent.toString() + "/mo"
                 view.card_date.text = leaseDocument.dateRange
+                val issueString : String = view.context.getString(R.string.issues_found)
+                if (leaseDocument.numIssues == 0) {
+                    view.card_issues.text = "no " + issueString
+                    view.card_issues.backgroundTintList = ContextCompat.getColorStateList(view.context, R.color.darkgreen)
+                } else {
+                    view.card_issues.text =  leaseDocument.numIssues.toString() + " " + issueString
+                    view.card_issues.backgroundTintList = ContextCompat.getColorStateList(view.context, R.color.watchoutred)
+                }
             }
         }
 
