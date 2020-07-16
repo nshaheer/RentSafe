@@ -8,7 +8,7 @@
     android:layout_marginTop="@dimen/generic_margin_8dp"
     android:background="@drawable/circular_button"
     android:backgroundTint="@color/lightergrey"
-    android:drawableStart="@drawable/ic_warning"
+    android:drawableStart="@drawable/ic_error_outline"
     android:drawablePadding="@dimen/generic_margin_8dp"
     android:padding="@dimen/generic_padding"
     android:theme="@style/BaseText" />
