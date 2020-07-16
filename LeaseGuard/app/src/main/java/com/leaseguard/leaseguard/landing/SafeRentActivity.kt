@@ -2,6 +2,7 @@ package com.leaseguard.leaseguard.landing
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -20,8 +21,9 @@ import javax.inject.Inject
 
 
 class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
-    private val LIBRARY_CODE = 1
-    private val ANALYZE_DOC_CODE = 2
+    private val PHOTO_CODE = 1
+    private val LIBRARY_CODE = 2
+    private val ANALYZE_DOC_CODE = 3
 
     @Inject
     lateinit var safeRentViewModel : SafeRentActivityViewModel
@@ -40,37 +42,33 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-//
-//        floatingActionMenu.addItem("Library", R.drawable.ic_library,
-//                View.OnClickListener {
-//                    val intent = Intent()
-//                            .setType("*/*")
-//                            .setAction(Intent.ACTION_GET_CONTENT)
-//                    startActivityForResult(Intent.createChooser(intent, "Select a file"), LIBRARY_CODE)
-//                })
-//        floatingActionMenu.addItem("Photo", R.drawable.ic_camera,
-//                View.OnClickListener {
-//                    // TODO: open camera
-//                })
-
-
         addDocumentFAB.inflate(R.menu.menu_add_document)
 
         addDocumentFAB.setOnActionSelectedListener { actionItem ->
             when (actionItem.id) {
                 R.id.fab_action_googleDrive -> {
                     Toast.makeText(this, "Google Drive", Toast.LENGTH_SHORT).show()
+                    addDocumentFAB.close()
                 }
                 R.id.fab_action_pdf -> {
-                    Toast.makeText(this, "PDF", Toast.LENGTH_SHORT).show()
+                    val intent = Intent()
+                            .setType("*/*")
+                            .setAction(Intent.ACTION_GET_CONTENT)
+                    startActivityForResult(Intent.createChooser(intent, "Select a file"), LIBRARY_CODE)
+                    addDocumentFAB.close()
                 }
                 R.id.fab_action_photoLibrary -> {
                     // TODO: Open Recent Photos
                     Toast.makeText(this, "Photo Library", Toast.LENGTH_SHORT).show()
+                    addDocumentFAB.close()
                 }
                 R.id.fab_action_photo -> {
-                    // TODO: Open Camera
-                    Toast.makeText(this, "Photo", Toast.LENGTH_SHORT).show()
+                    Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                        takePictureIntent.resolveActivity(packageManager)?.also {
+                            startActivityForResult(takePictureIntent, PHOTO_CODE)
+                        }
+                    }
+                    addDocumentFAB.close()
                 }
             }
             true
@@ -159,7 +157,9 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
-            if (requestCode == LIBRARY_CODE) {
+            if (requestCode == PHOTO_CODE) {
+                Toast.makeText(this, "Photo Taken", Toast.LENGTH_SHORT).show()
+            } else if (requestCode == LIBRARY_CODE) {
                 val resultFile = data?.data
                 safeRentViewModel.onFileSelected(resultFile)
             } else if (requestCode == ANALYZE_DOC_CODE) {
