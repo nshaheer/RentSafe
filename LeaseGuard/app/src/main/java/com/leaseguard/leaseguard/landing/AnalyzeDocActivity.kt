@@ -102,6 +102,7 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             android.R.id.home -> {
+                setResult(RESULT_OK)
                 finish()
                 return true
             }
@@ -118,8 +119,8 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         analyzingDialog = AlertDialog.Builder(this)
                 .setTitle("Analyzing document...")
                 .setMessage("We are automatically checking to see if there are any issues with your lease")
-                .setPositiveButton("CANCEL") { dialogInterface, _ ->
-                    analyzeDocViewModel.cancelAnalysis(dialogInterface)
+                .setPositiveButton("CANCEL") { _, _ ->
+                    analyzeDocViewModel.cancelAnalysis()
                 }
                 .setCancelable(false)
                 .create()

@@ -1,14 +1,13 @@
 package com.leaseguard.leaseguard.landing
 
-import android.content.DialogInterface
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.leaseguard.leaseguard.models.LeaseDocument
 import com.leaseguard.leaseguard.models.RentIssue
+import com.leaseguard.leaseguard.repositories.DocumentRepository
 import javax.inject.Inject
 
-class AnalyzeDocActivityViewModel @Inject constructor() : ViewModel() {
+class AnalyzeDocActivityViewModel @Inject constructor(private val documentRepository: DocumentRepository) : ViewModel() {
     val rentIsSafe = false
     val dummyDocument = LeaseDocument("Luxe Waterloo", "333 King Street N", 600, "May 1, 2017 - Aug 31, 2017", 2)
     val dummyIssues = listOf(
@@ -31,7 +30,6 @@ class AnalyzeDocActivityViewModel @Inject constructor() : ViewModel() {
     var leaseDetails: MutableLiveData<LeaseDocument> = MutableLiveData()
 
     fun doAnalysis() {
-        Log.d("sang", "i am doing analysis")
         isLoading.postValue(true)
         // TODO: Make an API call
         val thread = Thread(Runnable {
@@ -40,11 +38,12 @@ class AnalyzeDocActivityViewModel @Inject constructor() : ViewModel() {
             showSafeRent.postValue(rentIsSafe)
             rentIssues.postValue(dummyIssues)
             leaseDetails.postValue(dummyDocument)
+            documentRepository.addDocument(dummyDocument)
         })
         thread.start()
     }
 
-    fun cancelAnalysis(dialogInterface: DialogInterface) {
+    fun cancelAnalysis() {
         endActivity.postValue(0)
     }
 }

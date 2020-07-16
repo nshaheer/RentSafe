@@ -12,4 +12,6 @@
     <string name="sign_lease">SIGN LEASE</string>
     <string name="edit_lease_details_manually">Edit lease details manually</string>
     <string name="rent_amount_per_month">$%.2f / month</string>
+    <string name="no_document">You don\'t have any document</string>
+    <string name="no_document_desc">Take a photo or import a PDF</string>
 </resources>

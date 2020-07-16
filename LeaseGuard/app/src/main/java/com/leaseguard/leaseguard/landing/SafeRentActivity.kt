@@ -19,11 +19,15 @@ import javax.inject.Inject
 
 class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
     private val LIBRARY_CODE = 1
+    private val ANALYZE_DOC_CODE = 2
 
     @Inject
     lateinit var safeRentViewModel : SafeRentActivityViewModel
+
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
+
+    private val leaseList : ArrayList<LeaseDocument> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,12 +52,25 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
 
         safeRentViewModel.startAnalyzeDocActivity.observe(this, Observer {
             val intent = Intent(this, AnalyzeDocActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, ANALYZE_DOC_CODE)
         })
 
-        val leaseList : ArrayList<LeaseDocument> = ArrayList();
-        val leaseDocument : LeaseDocument = LeaseDocument("Luxe Waterloo", "333 King St. N", 600, "April 1, 2017 - August 31, 2017", 0)
-        leaseList.add(leaseDocument)
+        safeRentViewModel.documentUpdated.observe(this, Observer { documents ->
+            leaseList.clear()
+            leaseList.addAll(documents)
+            viewAdapter.notifyDataSetChanged()
+            if (leaseList.isNotEmpty()) {
+                noDocumentContainer.visibility = View.GONE
+            } else {
+                noDocumentContainer.visibility = View.VISIBLE
+            }
+        })
+
+        if (leaseList.isNotEmpty()) {
+            noDocumentContainer.visibility = View.GONE
+        } else {
+            noDocumentContainer.visibility = View.VISIBLE
+        }
         viewAdapter = DocumentAdapter(leaseList)
         viewManager = LinearLayoutManager(this)
         recyclerDocumentList.setHasFixedSize(true)
@@ -115,9 +132,13 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == LIBRARY_CODE && resultCode == RESULT_OK) {
-            val resultFile = data?.data
-            safeRentViewModel.onFileSelected(resultFile)
+        if (resultCode == RESULT_OK) {
+            if (requestCode == LIBRARY_CODE) {
+                val resultFile = data?.data
+                safeRentViewModel.onFileSelected(resultFile)
+            } else if (requestCode == ANALYZE_DOC_CODE) {
+                safeRentViewModel.onReturned()
+            }
         }
     }
 }

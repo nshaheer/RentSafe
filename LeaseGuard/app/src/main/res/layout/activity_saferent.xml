@@ -4,6 +4,31 @@
     android:layout_height="match_parent"
     android:id="@+id/activity_saferent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:id="@+id/noDocumentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_empty_documents" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:theme="@style/BaseText.Text14"
+            android:text="@string/no_document"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/generic_margin_8dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:theme="@style/BaseText.Text14"
+            android:text="@string/no_document_desc"
+            android:layout_marginTop="@dimen/generic_margin_8dp"/>
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
