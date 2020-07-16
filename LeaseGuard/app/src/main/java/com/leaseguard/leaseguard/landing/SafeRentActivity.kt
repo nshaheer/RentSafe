@@ -6,12 +6,14 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.leaseguard.leaseguard.BaseActivity
 import com.leaseguard.leaseguard.R
 import com.leaseguard.leaseguard.models.LeaseDocument
+import com.leinardi.android.speeddial.SpeedDialActionItem
 import kotlinx.android.synthetic.main.activity_saferent.*
 import kotlinx.android.synthetic.main.card_document.view.*
 import javax.inject.Inject
@@ -38,17 +40,41 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        floatingActionMenu.addItem("Library", R.drawable.ic_lib,
-                View.OnClickListener {
-                    val intent = Intent()
-                            .setType("*/*")
-                            .setAction(Intent.ACTION_GET_CONTENT)
-                    startActivityForResult(Intent.createChooser(intent, "Select a file"), LIBRARY_CODE)
-                })
-        floatingActionMenu.addItem("Photo", R.drawable.ic_camera,
-                View.OnClickListener {
-                    // TODO: open camera
-                })
+//
+//        floatingActionMenu.addItem("Library", R.drawable.ic_library,
+//                View.OnClickListener {
+//                    val intent = Intent()
+//                            .setType("*/*")
+//                            .setAction(Intent.ACTION_GET_CONTENT)
+//                    startActivityForResult(Intent.createChooser(intent, "Select a file"), LIBRARY_CODE)
+//                })
+//        floatingActionMenu.addItem("Photo", R.drawable.ic_camera,
+//                View.OnClickListener {
+//                    // TODO: open camera
+//                })
+
+
+        addDocumentFAB.inflate(R.menu.menu_add_document)
+
+        addDocumentFAB.setOnActionSelectedListener { actionItem ->
+            when (actionItem.id) {
+                R.id.fab_action_googleDrive -> {
+                    Toast.makeText(this, "Google Drive", Toast.LENGTH_SHORT).show()
+                }
+                R.id.fab_action_pdf -> {
+                    Toast.makeText(this, "PDF", Toast.LENGTH_SHORT).show()
+                }
+                R.id.fab_action_photoLibrary -> {
+                    // TODO: Open Recent Photos
+                    Toast.makeText(this, "Photo Library", Toast.LENGTH_SHORT).show()
+                }
+                R.id.fab_action_photo -> {
+                    // TODO: Open Camera
+                    Toast.makeText(this, "Photo", Toast.LENGTH_SHORT).show()
+                }
+            }
+            true
+        }
 
         safeRentViewModel.startAnalyzeDocActivity.observe(this, Observer {
             val intent = Intent(this, AnalyzeDocActivity::class.java)

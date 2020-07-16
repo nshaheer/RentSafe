@@ -35,14 +35,13 @@
         android:id="@+id/recyclerDocumentList"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="4dp"/>
-    <com.leaseguard.leaseguard.ui.ActionMenu
-        android:id="@+id/floatingActionMenu"
+
+    <com.leinardi.android.speeddial.SpeedDialView
+        android:id="@+id/addDocumentFAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:padding="24dp"/>
+        app:sdMainFabClosedSrc="@drawable/ic_add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
