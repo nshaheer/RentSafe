@@ -9,4 +9,6 @@
     <color name="lightgrey">#BABABA</color>
     <color name="lightergrey">#EAEAEA</color>
     <color name="bluishblue">#019AE8</color>
+    <color name="darkgreen">#007d00</color>
+    <color name="cardBackground">#F6F6F6</color>
 </resources>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardBackgroundColor="@color/cardBackground"
+    android:id="@+id/card_document"
+    card_view:cardCornerRadius="3dp"
+    card_view:cardElevation="4dp"
+    android:layout_marginTop="0dp"
+    android:layout_marginBottom="0dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    card_view:cardUseCompatPadding="true">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/cardBackground"
+        android:id="@+id/card_container">
+
+        <ImageView
+            android:id="@+id/card_image"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:cropToPadding="false"
+            android:maxWidth="120dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/lease_temp" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingVertical="12dp"
+            android:paddingHorizontal="11dp"
+            android:id="@+id/card_text">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                card_view:layout_constraintBottom_toTopOf="@id/card_title"
+                card_view:layout_constraintRight_toRightOf="parent"
+                android:textColor="@color/white"
+                android:background="@drawable/rounded_corners"
+                android:text="No issues found"
+                android:id="@+id/card_issues"
+                android:textSize="10dp"
+                android:paddingHorizontal="8dp"
+                android:gravity="center_vertical" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                card_view:layout_constraintBottom_toBottomOf="@id/card_issues"
+                card_view:layout_constraintLeft_toLeftOf="parent"
+                android:textColor="@color/darkblack"
+                android:text="Luxe Waterloo"
+                android:id="@+id/card_title"
+                android:textSize="14dp"
+                android:paddingTop="2dp"
+                android:paddingHorizontal="4dp"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                card_view:layout_constraintTop_toBottomOf="@id/card_title"
+                card_view:layout_constraintLeft_toLeftOf="parent"
+                android:padding="4dp"
+                android:text="333 King St. N"
+                android:textColor="@color/darkblack"
+                android:id="@+id/card_address"
+                android:textSize="10dp"
+                android:gravity="center_vertical" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="$600/mo"
+                android:textStyle="bold"
+                android:textColor="@color/darkblack"
+                card_view:layout_constraintTop_toBottomOf="@id/card_address"
+                card_view:layout_constraintLeft_toLeftOf="parent"
+                android:id="@+id/card_rent"
+                android:textSize="16dp"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="14dp"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="4dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="April 1, 2017 - August 31, 2017"
+                card_view:layout_constraintTop_toBottomOf="@id/card_rent"
+                card_view:layout_constraintLeft_toLeftOf="parent"
+                android:id="@+id/card_date"
+                android:textSize="10dp"
+                android:paddingHorizontal="4dp"
+                android:paddingTop="15dp"
+                android:gravity="center_vertical"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
