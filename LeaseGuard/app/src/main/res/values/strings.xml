@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">LeaseGuard</string>
+    <string name="watchout">Watch Out!</string>
+    <string name="looksgood">Looks Good!</string>
+    <string name="issues_body">RentSafe found 2 potential issues with your lease</string>
+    <string name="no_issues_body">RentSafe did not find any major issue with your lease</string>
+    <string name="lease_details">LEASE DETAILS</string>
+    <string name="property_name">Property Name</string>
+    <string name="address">Address</string>
+    <string name="rent_amount">Rent Amount</string>
+    <string name="rental_duration">Rental Duration</string>
+    <string name="sign_lease">SIGN LEASE</string>
+    <string name="edit_lease_details_manually">Edit lease details manually</string>
+    <string name="rent_amount_per_month">$%.2f / month</string>
+    <string name="no_document">You don\'t have any document</string>
+    <string name="no_document_desc">Take a photo or import a PDF</string>
+    <string name="issues_found">issues found</string>
 </resources>

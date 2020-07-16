@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/analyzeDocActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonCTAContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0">
+
+        <LinearLayout
+            android:id="@+id/analysisContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/headerView"
+                android:layout_width="match_parent"
+                android:layout_height="144dp"
+                android:layout_marginTop="@dimen/generic_margin_8dp">
+
+                <ImageView
+                    android:id="@+id/headerImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_empty_warning" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/headerText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/generic_margin_24dp"
+                android:gravity="bottom"
+                android:text="@string/watchout"
+                android:theme="@style/Title" />
+
+            <TextView
+                android:id="@+id/issueText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/generic_margin_8dp"
+                android:gravity="bottom"
+                android:text="@string/issues_body"
+                android:theme="@style/BaseText" />
+
+            <LinearLayout
+                android:id="@+id/warningsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/generic_margin_8dp"
+                android:orientation="vertical" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/detailsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/generic_margin_16dp"
+                android:background="@color/lightergrey"
+                android:padding="@dimen/generic_margin_16dp">
+
+                <TextView
+                    android:id="@+id/leaseDetail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lease_details"
+                    android:textStyle="bold"
+                    android:theme="@style/BaseText.Text12"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/propertyName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text="@string/property_name"
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/leaseDetail" />
+
+                <TextView
+                    android:id="@+id/propertyField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text=""
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@id/propertyName"
+                    app:layout_constraintTop_toBottomOf="@id/leaseDetail" />
+
+                <TextView
+                    android:id="@+id/addressText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text="@string/address"
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/propertyName" />
+
+                <TextView
+                    android:id="@+id/addressField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text=""
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@id/addressText"
+                    app:layout_constraintTop_toBottomOf="@id/propertyField" />
+
+                <TextView
+                    android:id="@+id/rentAmount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text="@string/rent_amount"
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/addressText" />
+
+                <TextView
+                    android:id="@+id/rentAmountField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text=""
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@id/rentAmount"
+                    app:layout_constraintTop_toBottomOf="@id/addressField" />
+
+                <TextView
+                    android:id="@+id/rentalDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text="@string/rental_duration"
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rentAmount" />
+
+                <TextView
+                    android:id="@+id/rentalDurationField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text=""
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@id/rentalDuration"
+                    app:layout_constraintTop_toBottomOf="@id/rentAmountField" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@id/buttonCTAContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:layout_width="170dp"
+            android:layout_height="36dp"
+            android:layout_marginBottom="@dimen/generic_margin_8dp"
+            android:background="@color/bluishblue"
+            android:text="@string/sign_lease"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/generic_margin_24dp"
+            android:text="@string/edit_lease_details_manually"
+            android:textColor="@color/darkblack"
+            android:theme="@style/BaseText.Text10" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
