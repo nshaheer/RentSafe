@@ -3,6 +3,7 @@ package com.leaseguard.leaseguard.landing
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
 import com.leaseguard.leaseguard.BaseActivity
 import com.leaseguard.leaseguard.R
 import kotlinx.android.synthetic.main.activity_saferent.*
@@ -17,7 +18,7 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_saferent)
-        
+
         floatingActionMenu.addItem("Library", R.drawable.ic_lib,
                 View.OnClickListener {
                     val intent = Intent()
@@ -29,6 +30,11 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
                 View.OnClickListener {
                     // TODO: open camera
                 })
+
+        safeRentViewModel.startAnalyzeDocActivity.observe(this, Observer {
+            val intent = Intent(this, AnalyzeDocActivity::class.java)
+            startActivity(intent)
+        })
     }
 
     override fun getViewModel(): SafeRentActivityViewModel {

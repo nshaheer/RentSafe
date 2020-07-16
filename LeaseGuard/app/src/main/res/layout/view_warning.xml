@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/generic_margin_8dp"
+    android:layout_marginEnd="@dimen/generic_margin_8dp"
+    android:layout_marginTop="@dimen/generic_margin_8dp"
+    android:background="@drawable/circular_button"
+    android:backgroundTint="@color/lightergrey"
+    android:drawableStart="@drawable/ic_warning"
+    android:drawablePadding="@dimen/generic_margin_8dp"
+    android:padding="@dimen/generic_padding"
+    android:theme="@style/BaseText" />

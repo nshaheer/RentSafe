@@ -9,4 +9,9 @@ class SafeRentActivityModule {
     fun provideSafeRentActivityViewModel() : SafeRentActivityViewModel {
         return SafeRentActivityViewModel()
     }
+
+    @Provides
+    fun provideAnalyzeDocActivityViewModel(): AnalyzeDocActivityViewModel {
+        return AnalyzeDocActivityViewModel()
+    }
 }
