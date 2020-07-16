@@ -22,8 +22,10 @@ import javax.inject.Inject
 
 class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
     private val PHOTO_CODE = 1
-    private val LIBRARY_CODE = 2
-    private val ANALYZE_DOC_CODE = 3
+    private val PHOTO_LIBRARY_CODE = 2
+    private val PDF_CODE = 3
+    private val GOOGLE_DRIVE_CODE = 4
+    private val ANALYZE_DOC_CODE = 5
 
     @Inject
     lateinit var safeRentViewModel : SafeRentActivityViewModel
@@ -47,19 +49,22 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         addDocumentFAB.setOnActionSelectedListener { actionItem ->
             when (actionItem.id) {
                 R.id.fab_action_googleDrive -> {
-                    Toast.makeText(this, "Google Drive", Toast.LENGTH_SHORT).show()
+                    val intent = Intent()
+                            .setType("*/*")
+                            .setAction(Intent.ACTION_GET_CONTENT)
+                    startActivityForResult(Intent.createChooser(intent, "Select a file"), GOOGLE_DRIVE_CODE)
                     addDocumentFAB.close()
                 }
                 R.id.fab_action_pdf -> {
                     val intent = Intent()
                             .setType("*/*")
                             .setAction(Intent.ACTION_GET_CONTENT)
-                    startActivityForResult(Intent.createChooser(intent, "Select a file"), LIBRARY_CODE)
+                    startActivityForResult(Intent.createChooser(intent, "Select a file"), PDF_CODE)
                     addDocumentFAB.close()
                 }
                 R.id.fab_action_photoLibrary -> {
-                    // TODO: Open Recent Photos
-                    Toast.makeText(this, "Photo Library", Toast.LENGTH_SHORT).show()
+                    val pickPhoto = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                    startActivityForResult(pickPhoto, PHOTO_LIBRARY_CODE)
                     addDocumentFAB.close()
                 }
                 R.id.fab_action_photo -> {
@@ -159,7 +164,7 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         if (resultCode == RESULT_OK) {
             if (requestCode == PHOTO_CODE) {
                 Toast.makeText(this, "Photo Taken", Toast.LENGTH_SHORT).show()
-            } else if (requestCode == LIBRARY_CODE) {
+            } else if (requestCode == PDF_CODE) {
                 val resultFile = data?.data
                 safeRentViewModel.onFileSelected(resultFile)
             } else if (requestCode == ANALYZE_DOC_CODE) {
