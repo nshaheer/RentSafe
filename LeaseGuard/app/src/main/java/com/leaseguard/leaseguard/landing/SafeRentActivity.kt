@@ -3,9 +3,10 @@ package com.leaseguard.leaseguard.landing
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
-import androidx.lifecycle.Observer
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.leaseguard.leaseguard.BaseActivity
@@ -14,6 +15,7 @@ import com.leaseguard.leaseguard.models.LeaseDocument
 import kotlinx.android.synthetic.main.activity_saferent.*
 import kotlinx.android.synthetic.main.card_document.view.*
 import javax.inject.Inject
+
 
 class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
     private val LIBRARY_CODE = 1
@@ -26,6 +28,11 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_saferent)
+
+        supportActionBar?.title = "RentSafe"
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         floatingActionMenu.addItem("Library", R.drawable.ic_lib,
                 View.OnClickListener {
@@ -52,6 +59,16 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         recyclerDocumentList.setHasFixedSize(true)
         recyclerDocumentList.layoutManager = viewManager
         recyclerDocumentList.adapter = viewAdapter
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            android.R.id.home -> {
+                // TODO: handle the menu button press
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     class DocumentAdapter(private val myLeaseDocumentList: ArrayList<LeaseDocument>) :
