@@ -9,5 +9,5 @@ class ClassifierInterface(metaclass=ABCMeta):
 class DummyClassifier(ClassifierInterface):
     def classify(self, paragraphs):
         # Upload to S3 - CSV in valid format
-        # Call AWS Boto3 Customer Comprehend Job
+        # Call AWS Boto3 Custom Comprehend Job
         return 1
