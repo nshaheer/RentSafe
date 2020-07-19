@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from storage import StorageInterface
 from classifier import ClassifierInterface
 from entity_recognizer import EntityRecogInterface
@@ -16,8 +18,9 @@ class SubmitForAnalysis:
 
     def execute(self, request):
 
-        lease_id = request.lease_id
-        paragraphs = request.lease_id
+        lease_id = str(uuid4())
+
+        paragraphs = request.paragraphs
 
         classification_job_id = self.classifier.classify(lease_id, paragraphs)
         recog_job_id = self.entity_recog.recognize(lease_id, paragraphs)

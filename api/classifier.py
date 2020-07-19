@@ -8,4 +8,6 @@ class ClassifierInterface(metaclass=ABCMeta):
 
 class DummyClassifier(ClassifierInterface):
     def classify(self, lease_id, paragraphs):
+        # Upload to S3 - CSV in valid format
+        # Call AWS Boto3 Customer Comprehend Job
         return 1
