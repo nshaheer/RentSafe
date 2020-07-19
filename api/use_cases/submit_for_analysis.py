@@ -1,5 +1,4 @@
-from uuid import uuid4
-
+from response import Response
 from storage import StorageInterface
 from classifier import ClassifierInterface
 from entity_recognizer import EntityRecogInterface
@@ -18,17 +17,16 @@ class SubmitForAnalysis:
 
     def execute(self, request):
 
-        lease_id = str(uuid4())
-
         paragraphs = request.paragraphs
 
-        classification_job_id = self.classifier.classify(lease_id, paragraphs)
-        recog_job_id = self.entity_recog.recognize(lease_id, paragraphs)
+        classification_job_id = self.classifier.classify(paragraphs)
+        recog_job_id = self.entity_recog.recognize(paragraphs)
 
-        self.storage.add_lease(
-            lease_id,
+        lease_id = self.storage.add_lease(
             paragraphs=paragraphs,
             status="PENDING",
             classification_job=classification_job_id,
             recog_job=recog_job_id,
         )
+
+        return Response({"lease_id": lease_id})

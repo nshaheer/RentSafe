@@ -1,6 +1,6 @@
+from uuid import uuid4
 from abc import ABCMeta, abstractmethod
 
-from uuid import uuid4
 from pymongo import MongoClient
 
 
@@ -20,7 +20,11 @@ class MemStorage(StorageInterface):
         }
         lease.update(kwargs)
 
-        self.storage[str(uuid4())] = lease
+        lease_id = str(uuid4())
+
+        self.storage[lease_id] = lease
+
+        return lease_id
 
 
 class MongoStorage(StorageInterface):
