@@ -1,8 +1,8 @@
 from use_cases.submit_for_analysis import SubmitForAnalysis
 
-from storage import MemStorage
-from classifier import DummyClassifier
-from entity_recognizer import DummyEntityRecog
+from services.storage import MemStorage
+from services.classifier import DummyClassifier
+from services.entity_recognizer import DummyEntityRecog
 
 # Write Pytests
 
