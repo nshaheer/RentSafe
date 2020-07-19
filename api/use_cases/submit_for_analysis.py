@@ -18,7 +18,7 @@ class SubmitForAnalysis:
 
     def execute(self, request: Request) -> Response:
 
-        paragraphs = request.paragraphs
+        paragraphs = request.data["paragraphs"]
 
         classification_job_id = self.classifier.classify(paragraphs)
         recog_job_id = self.entity_recog.recognize(paragraphs)
