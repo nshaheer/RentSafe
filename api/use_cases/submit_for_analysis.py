@@ -1,4 +1,5 @@
 from response import Response
+from request import Request
 from storage import StorageInterface
 from classifier import ClassifierInterface
 from entity_recognizer import EntityRecogInterface
@@ -15,7 +16,7 @@ class SubmitForAnalysis:
         self.classifier = classifier
         self.entity_recog = entity_recog
 
-    def execute(self, request):
+    def execute(self, request: Request) -> Response:
 
         paragraphs = request.paragraphs
 
