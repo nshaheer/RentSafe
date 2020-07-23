@@ -8,6 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- FAB theme -->
+    <style name="DocumentsFAB">
+        <item name="colorAccent">@color/darkblack</item> <!-- FAB bg color -->
+        <item name="colorPrimary">@color/darkblack</item> <!-- action bg color -->
+        <item name="android:tint">@color/white</item> <!-- action icon color -->
+    </style>
+
     <style name="Title">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">36sp</item>

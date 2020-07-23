@@ -12,7 +12,11 @@
     <string name="sign_lease">SIGN LEASE</string>
     <string name="edit_lease_details_manually">Edit lease details manually</string>
     <string name="rent_amount_per_month">$%.2f / month</string>
-    <string name="no_document">You don\'t have any document</string>
+    <string name="no_document">You don\'t have any documents</string>
     <string name="no_document_desc">Take a photo or import a PDF</string>
+    <string name="photo">Photo</string>
+    <string name="photo_library">Photo Library</string>
+    <string name="pdf">PDF</string>
+    <string name="google_drive">Google Drive</string>
     <string name="issues_found">issues found</string>
 </resources>
