@@ -77,10 +77,15 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
     }
 
     private fun populateLeaseDetails(leaseDetail: LeaseDocument) {
-        propertyField.text = leaseDetail.title
-        addressField.text = leaseDetail.address
+        // Lease Details Section
         rentAmountField.text = String.format(getText(R.string.rent_amount_per_month).toString(), leaseDetail.rent.toFloat())
-        rentalDurationField.text = leaseDetail.dateRange
+        rentDurationField.text = leaseDetail.dateRange
+        keyDepositField.text = "$50" // placeholder
+        petsAllowedField.text = if (analyzeDocViewModel.showSafeRent.value!!) "YES" else "NO" // placeholder
+        // Property Info Section
+        propertyNameField.text = leaseDetail.title
+        addressField.text = leaseDetail.address
+        landlordField.text = "Sage Corporation"
     }
 
     private fun populateRentIssues(rentIssues: List<RentIssue>) {
