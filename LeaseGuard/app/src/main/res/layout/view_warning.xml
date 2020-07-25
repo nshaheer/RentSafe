@@ -10,5 +10,6 @@
     android:backgroundTint="@color/lightergrey"
     android:drawableStart="@drawable/ic_error_outline"
     android:drawablePadding="@dimen/generic_margin_8dp"
+    android:drawableTint="@color/watchoutred"
     android:padding="@dimen/generic_padding"
     android:theme="@style/BaseText" />

@@ -1,7 +1,11 @@
 package com.leaseguard.leaseguard.landing
 
 import android.app.AlertDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
@@ -14,6 +18,7 @@ import kotlinx.android.synthetic.main.activity_analyzedoc.*
 import javax.inject.Inject
 
 class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
+    private val EMAIL_CODE = 1
 
     @Inject
     lateinit var analyzeDocViewModel: AnalyzeDocActivityViewModel
@@ -28,7 +33,6 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         analyzeDocActivity.visibility = View.GONE
 
         supportActionBar?.title = "Analyze Document"
-        supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         //TODO: save state and restore
@@ -99,11 +103,28 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_analyze_doc, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             android.R.id.home -> {
                 setResult(RESULT_OK)
                 finish()
+                return true
+            }
+            R.id.action_share -> {
+                val intent = Intent(Intent.ACTION_SENDTO)
+                intent.data = Uri.parse("mailto:") // only email apps should handle this
+//                intent.putExtra(Intent.EXTRA_EMAIL, "desmond.lua@luasoftware.com")
+//                intent.putExtra(Intent.EXTRA_SUBJECT,"Feedback")
+
+                startActivityForResult(intent, EMAIL_CODE)
+//                if (intent.resolveActivity(activity.packageManager) != null) {
+//                    startActivity(intent)
+//                }
                 return true
             }
             else -> super.onOptionsItemSelected(item)

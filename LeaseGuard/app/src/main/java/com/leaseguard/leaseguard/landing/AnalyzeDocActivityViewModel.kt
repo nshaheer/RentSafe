@@ -33,7 +33,7 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
         isLoading.postValue(true)
         // TODO: Make an API call
         val thread = Thread(Runnable {
-            Thread.sleep(2000)
+            Thread.sleep(5000)
             isLoading.postValue(false)
             showSafeRent.postValue(rentIsSafe)
             rentIssues.postValue(dummyIssues)
