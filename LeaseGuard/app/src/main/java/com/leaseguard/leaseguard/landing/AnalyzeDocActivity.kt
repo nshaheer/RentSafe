@@ -116,12 +116,17 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
                 return true
             }
             R.id.action_share -> {
-                val intent = Intent(Intent.ACTION_SENDTO)
-                intent.data = Uri.parse("mailto:") // only email apps should handle this
+                val gmmIntentUri = Uri.parse("geo:0,0?q=Sage 2, 318 Spruce St, Waterloo, Ontario") // [Property Name, Street Address, City, Province]
+                val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                mapIntent.setPackage("com.google.android.apps.maps")
+                startActivity(mapIntent)
+
+//                val intent = Intent(Intent.ACTION_SENDTO)
+//                intent.data = Uri.parse("mailto:") // only email apps should handle this
 //                intent.putExtra(Intent.EXTRA_EMAIL, "desmond.lua@luasoftware.com")
 //                intent.putExtra(Intent.EXTRA_SUBJECT,"Feedback")
 
-                startActivityForResult(intent, EMAIL_CODE)
+//                startActivityForResult(intent, EMAIL_CODE)
 //                if (intent.resolveActivity(activity.packageManager) != null) {
 //                    startActivity(intent)
 //                }
