@@ -44,7 +44,6 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
 
         supportActionBar?.title = "RentSafe"
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         addDocumentFAB.inflate(R.menu.menu_add_document)
