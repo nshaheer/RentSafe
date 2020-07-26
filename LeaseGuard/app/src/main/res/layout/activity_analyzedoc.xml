@@ -126,7 +126,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/generic_margin_8dp"
-                    android:text="Key Deposit"
+                    android:text="@string/key_deposit"
                     android:theme="@style/BaseText.Text11"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/rentDurationLabel" />
@@ -148,7 +148,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/generic_margin_8dp"
-                    android:text="Pets Allowed"
+                    android:text="@string/pets_allowed"
                     android:theme="@style/BaseText.Text11"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/keyDepositLabel" />
@@ -178,7 +178,7 @@
                     android:id="@+id/propertyInfoLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="PROPERTY INFO"
+                    android:text="@string/property_info"
                     android:textStyle="bold"
                     android:theme="@style/BaseText.Text12"
                     app:layout_constraintStart_toStartOf="parent"
@@ -233,7 +233,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/generic_margin_8dp"
-                    android:text="Landlord"
+                    android:text="@string/landlord"
                     android:theme="@style/BaseText.Text11"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/addressLabel" />
@@ -254,12 +254,13 @@
                     android:id="@+id/ratingsButton"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
-                    android:text="SEE RATINGS/REVIEWS"
+                    android:text="@string/see_ratings_reviews"
                     android:textSize="8dp"
-                    style="@style/Widget.MaterialComponents.Button.Icon"
-                    app:icon="@drawable/ic_add"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/darkblack"
+                    app:icon="@drawable/ic_chevron_right"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/landlordLabel"/>
+                    app:layout_constraintTop_toBottomOf="@id/landlordLabel" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
