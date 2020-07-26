@@ -1,8 +1,8 @@
 from response import Response
 from request import Request
-from services.storage import StorageInterface
-from services.classifier import ClassifierInterface
-from services.entity_recognizer import EntityRecogInterface
+from infrastructure.storage import StorageInterface
+from infrastructure.classifier import ClassifierInterface
+from infrastructure.entity_recognizer import EntityRecogInterface
 
 
 class SubmitForAnalysis:
