@@ -33,3 +33,6 @@ Process Entity Recognition results in the context of a lease.
 
 ### Analyze Classification Results
 Process Classification results in the context of a lease.
+
+## Local Development
+`cd api && FLASK_APP=rest.py && FLASK_ENV=development && python3 -m flask run`
