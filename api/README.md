@@ -36,3 +36,5 @@ Process Classification results in the context of a lease.
 
 ## Local Development
 `cd api && FLASK_APP=rest.py && FLASK_ENV=development && python3 -m flask run`
+
+To run a faster API that returns mock data for local testing, `cd api && FLASK_APP=dummy_rest.py && FLASK_ENV=development && python3 -m flask run`

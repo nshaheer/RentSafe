@@ -24,6 +24,10 @@ class StorageInterface(metaclass=ABCMeta):
     def get_lease(self, lease_id):
         pass
 
+    @abstractmethod
+    def update_lease(self, lease_id, update):
+        pass
+
 
 class MemStorage(StorageInterface):
     def __init__(self):
@@ -37,7 +41,14 @@ class MemStorage(StorageInterface):
         return lease_id
 
     def get_lease(self, lease_id):
-        return self.leases.get(id, None)
+        return self.leases.get(lease_id, None)
+
+    def update_lease(self, lease_id, update):
+        lease = self.leases.get(lease_id, {})
+        lease.update(update)
+
+        self.leases[lease_id] = lease
+        return lease
 
 
 class MongoStorage(StorageInterface):
