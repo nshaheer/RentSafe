@@ -23,11 +23,12 @@ class SubmitForAnalysis:
         classification_job_id = self.classifier.classify(paragraphs)
         recog_job_id = self.entity_recog.recognize(paragraphs)
 
-        lease_id = self.storage.add_lease(
-            paragraphs=paragraphs,
-            status="PENDING",
-            classification_job=classification_job_id,
-            recog_job=recog_job_id,
-        )
+        lease_props = {
+            "paragraphs": paragraphs,
+            "status": "PENDING",
+            "classification_job_id": classification_job_id,
+            "recog_job_id": recog_job_id,
+        }
+        lease_id = self.storage.add_lease(lease_props)
 
         return Response({"lease_id": lease_id})
