@@ -21,3 +21,29 @@ class AnalysisService:
             "pets_prohibited": pets_prohibited,
             "guests_prohibited": guests_prohibited,
         }
+
+    @staticmethod
+    def analyze_recognition_results(results):
+        all_results = []
+        for result in results:
+            all_results.extend([e for e in result["Entities"] if e["Score"] > 0.75])
+
+        dates = [r["Text"] for r in all_results if r["Type"] == "DATE"]
+        amounts = [
+            r["Text"]
+            for r in all_results
+            if r["Type"] == "QUANTITY"
+            and r["Text"].isnumeric()
+            and int(r["Text"]) > 500
+        ]
+        locations = [r["Text"] for r in all_results if r["Type"] == "LOCATION"]
+        organizations = [r["Text"] for r in all_results if r["Type"] == "ORGANIZATION"]
+        people = [r["Text"] for r in all_results if r["Type"] == "PERSON"]
+
+        return {
+            "dates": dates,
+            "amounts": amounts,
+            "locations": locations,
+            "organizations": organizations,
+            "people": people,
+        }
