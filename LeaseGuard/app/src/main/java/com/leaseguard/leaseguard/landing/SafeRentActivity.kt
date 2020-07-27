@@ -113,6 +113,11 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         recyclerDocumentList.adapter = viewAdapter
     }
 
+    override fun onResume() {
+        super.onResume()
+        safeRentViewModel.onReturned()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             android.R.id.home -> {
