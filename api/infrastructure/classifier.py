@@ -5,7 +5,12 @@ import boto3
 
 
 class ClassifierInterface(metaclass=ABCMeta):
+    @abstractmethod
     def classify(self, paragraphs):
+        pass
+
+    @abstractmethod
+    def get_results(self, job_id):
         pass
 
 
@@ -14,6 +19,9 @@ class DummyClassifier(ClassifierInterface):
         # Upload to S3 - CSV in valid format
         # Call AWS Boto3 Custom Comprehend Job
         return 1
+
+    def get_results(self, job_id):
+        return {}
 
 
 class AwsComprehendClassifier(ClassifierInterface):
@@ -65,3 +73,6 @@ class AwsComprehendClassifier(ClassifierInterface):
         self._upload_txt_to_s3(txt_string)
 
         return self._schedule_classification_job()
+
+    def get_results(self, job_id):
+        return {}

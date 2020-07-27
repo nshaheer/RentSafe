@@ -5,13 +5,21 @@ import boto3
 
 
 class EntityRecogInterface(metaclass=ABCMeta):
+    @abstractmethod
     def recognize(self, paragraphs):
+        pass
+
+    @abstractmethod
+    def get_results(self, job_id):
         pass
 
 
 class DummyEntityRecog(EntityRecogInterface):
     def recognize(self, paragraphs):
         return 1
+
+    def get_results(self, job_id):
+        return {}
 
 
 class AWSComprehendEntityRecognizer(EntityRecogInterface):
@@ -62,3 +70,6 @@ class AWSComprehendEntityRecognizer(EntityRecogInterface):
         self._upload_txt_to_s3(txt_string)
 
         return self._schedule_recognition_job()
+
+    def get_results(self, job_id):
+        pass
