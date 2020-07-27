@@ -1,6 +1,5 @@
 package com.leaseguard.leaseguard.landing
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import com.leaseguard.leaseguard.BaseActivity
 import com.leaseguard.leaseguard.R
