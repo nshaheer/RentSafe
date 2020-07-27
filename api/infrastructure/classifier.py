@@ -1,11 +1,30 @@
+import json
+import os
+import tarfile
+import zipfile
 from uuid import uuid4
 from abc import ABCMeta, abstractmethod
 
+import requests
 import boto3
+from s3urls import parse_url
+
+
+class ClassifierException(Exception):
+    pass
+
+
+class ResultsNotAvailable(ClassifierException):
+    pass
 
 
 class ClassifierInterface(metaclass=ABCMeta):
+    @abstractmethod
     def classify(self, paragraphs):
+        pass
+
+    @abstractmethod
+    def get_results(self, job_id):
         pass
 
 
@@ -14,6 +33,9 @@ class DummyClassifier(ClassifierInterface):
         # Upload to S3 - CSV in valid format
         # Call AWS Boto3 Custom Comprehend Job
         return 1
+
+    def get_results(self, job_id):
+        return {}
 
 
 class AwsComprehendClassifier(ClassifierInterface):
@@ -65,3 +87,40 @@ class AwsComprehendClassifier(ClassifierInterface):
         self._upload_txt_to_s3(txt_string)
 
         return self._schedule_classification_job()
+
+    def get_results(self, job_id):
+
+        response = self.session.client(
+            "comprehend"
+        ).describe_document_classification_job(JobId=job_id)
+
+        status = response["DocumentClassificationJobProperties"]["JobStatus"]
+        if status != "COMPLETED":
+            raise ResultsNotAvailable(status)
+
+        # Parse S3 Output Uri
+        output_s3_uri = response["DocumentClassificationJobProperties"][
+            "OutputDataConfig"
+        ]["S3Uri"]
+        s3_parsed = parse_url(output_s3_uri)
+        print(s3_parsed)
+
+        # Download output.tar.gz
+        tmp_location = "/tmp/{}.tar.gz".format(self._id)
+        self.session.client("s3").download_file(
+            s3_parsed["bucket"], s3_parsed["key"], tmp_location
+        )
+
+        # Extract output.tar.gz
+        names = []
+        with tarfile.open(tmp_location) as tar:
+            names = tar.getnames()
+            tar.extractall(path="/tmp/{}/".format(self._id))
+
+        results = []
+        for name in names:
+            # Parse JSON in output
+            with open("/tmp/{}/{}".format(self._id, name)) as json_output:
+                results.extend([json.loads(line) for line in json_output.readlines()])
+
+        return results

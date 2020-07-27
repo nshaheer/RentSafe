@@ -1,14 +1,35 @@
 ## API
 
-There are 3 main goals of the API:
+There are 2 main goals of the Public API:
 
 ### Submit for analysis
-Submit paragraphs for analysis. This involves compiling CSVs for AWS Comprehend, uploading them to S3 and starting AWS Comprehend jobs.
+Submit paragraphs for analysis. This involves compiling txt files for AWS Comprehend, uploading them to S3, starting AWS Comprehend jobs and storing metadata in MongoDB.
 
 ### Get analysis
-Get the analysis for a given lease. This is a simple call to get the lease from our lease storage.
+Get the analysis for a given lease.
 
-### Update analysis
-When an ML job is completed, update the results. This happens when AWS Comprehend uploads the results of a job to S3, triggering an SNS notification. We need to interpret the results of the job and update the lease.
+If the lease analysis is complete then we need to simply get the results of the analysis in MongoDB and return them.
 
-The above 3 goals are hence encapsulated in the `use_cases` folder. The API Server (Flask|Falcon|FastAPI) calls these usecases.
+If not, engage the `services` to fetch Entity Recognition and Classification job results, analyse them and update the lease in MongoDB
+
+The above 2 goals are hence encapsulated in the `use_cases` folder. These usecases, which is the interface exposed to the public via HTTP utilize `infrastructure` and `services` as needed.
+
+## Infrastructure
+3rd aprty components critical to RentSafe.
+
+### Entity Recognizer
+A minimal interface wrapping the AWS `boto3` library and it's AWS Comprehend interface for entity recognition.
+
+### Classifier
+A minimal interface wrapping the AWS `boto3` library and it's AWS Comprehend interface for custom classification.
+
+### Storage
+A minimal interface wrapping the MongoDB Python client for adding and updating leases.
+
+## Services
+
+### Analyze Entity Recognition Results
+Process Entity Recognition results in the context of a lease.
+
+### Analyze Classification Results
+Process Classification results in the context of a lease.
