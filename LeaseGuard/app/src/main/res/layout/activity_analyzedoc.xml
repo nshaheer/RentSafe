@@ -259,6 +259,9 @@
                     android:textColor="@color/white"
                     android:backgroundTint="@color/darkblack"
                     app:icon="@drawable/ic_chevron_right"
+                    app:iconSize="12dp"
+                    app:iconGravity="end"
+                    app:iconPadding="0dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/landlordLabel" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -274,20 +277,13 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <Button
-                    android:layout_width="170dp"
-                    android:layout_height="36dp"
-                    android:layout_marginBottom="@dimen/generic_margin_8dp"
+                    android:id="@+id/signLeaseButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/generic_margin_16dp"
                     android:background="@color/bluishblue"
                     android:text="@string/sign_lease"
                     android:textColor="@color/white" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/generic_margin_24dp"
-                    android:text="@string/edit_lease_details_manually"
-                    android:textColor="@color/darkblack"
-                    android:theme="@style/BaseText.Text10" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

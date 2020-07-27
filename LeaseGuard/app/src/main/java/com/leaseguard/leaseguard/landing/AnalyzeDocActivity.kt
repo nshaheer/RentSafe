@@ -1,6 +1,5 @@
 package com.leaseguard.leaseguard.landing
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -8,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import com.leaseguard.leaseguard.BaseActivity
 import com.leaseguard.leaseguard.R
@@ -88,10 +88,15 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         }
 
         ratingsButton.setOnClickListener {
-            val gmmIntentUri = Uri.parse("geo:0,0?q=Sage 2, 318 Spruce St, Waterloo, Ontario") // [Property Name, Street Address, City, Province]
+            val gmmIntentUri = Uri.parse("geo:0,0?q=King Street Towers, 333 King St N, Waterloo, Ontario") // [Property Name, Street Address, City, Province]
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             mapIntent.setPackage("com.google.android.apps.maps")
             startActivity(mapIntent)
+        }
+
+        signLeaseButton.setOnClickListener {
+            val intent = Intent(this, SignLeaseActivity::class.java)
+            startActivity(intent)
         }
     }
 

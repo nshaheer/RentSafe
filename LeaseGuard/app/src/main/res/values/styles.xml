@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -11,8 +11,8 @@
     <!-- FAB theme -->
     <style name="DocumentsFAB">
         <item name="colorAccent">@color/darkblack</item> <!-- FAB bg color -->
-        <item name="colorPrimary">@color/darkblack</item> <!-- action bg color -->
-        <item name="android:tint">@color/white</item> <!-- action icon color -->
+        <item name="sdMainFabClosedIconColor">@color/white</item> <!-- FAB icon color -->
+        <item name="colorPrimary">@color/white</item> <!-- action bg color -->
     </style>
 
     <style name="Title">

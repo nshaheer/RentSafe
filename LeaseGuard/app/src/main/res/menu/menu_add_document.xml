@@ -4,6 +4,7 @@
         android:id="@+id/fab_action_photo"
         android:title="@string/photo"
         android:icon="@drawable/ic_photo_camera"
+
         />
     <item
         android:id="@+id/fab_action_photoLibrary"
