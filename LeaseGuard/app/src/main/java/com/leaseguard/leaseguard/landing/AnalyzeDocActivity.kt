@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -12,6 +11,7 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import com.leaseguard.leaseguard.BaseActivity
 import com.leaseguard.leaseguard.R
+import com.leaseguard.leaseguard.landing.SafeRentActivity.Companion.DOCUMENT_KEY
 import com.leaseguard.leaseguard.models.LeaseDocument
 import com.leaseguard.leaseguard.models.RentIssue
 import kotlinx.android.synthetic.main.activity_analyzedoc.*
@@ -35,6 +35,16 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         supportActionBar?.title = "Analyze Document"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        val documentKey: String? = intent.getStringExtra(DOCUMENT_KEY)
+        documentKey?.let {
+            analyzeDocViewModel.useDocument(it)
+        }?: run {
+            analyzeDocViewModel.doAnalysis()
+        }
+        analyzeDocViewModel.showErrorDialog.observe(this, Observer {
+
+        })
+
         //TODO: save state and restore
         analyzeDocViewModel.isLoading.observe(this, Observer { isLoading ->
             if (isLoading) {
@@ -44,7 +54,7 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
             }
         })
         analyzeDocViewModel.endActivity.observe(this, Observer {
-            finish()
+            showErrorThenExit()
         })
 
         // TODO: remove this, only here for demo
@@ -73,6 +83,8 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         })
         analyzeDocViewModel.leaseDetails.observe(this, Observer { leaseDetail ->
             populateLeaseDetails(leaseDetail)
+            // update the intent to hold the newest document key
+            intent.putExtra(DOCUMENT_KEY, leaseDetail.uuid)
         })
     }
 
@@ -131,9 +143,16 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        analyzeDocViewModel.doAnalysis()
+    private fun showErrorThenExit() {
+        AlertDialog.Builder(this)
+                .setTitle("Invalid document")
+                .setMessage("Something went wrong while reading this document")
+                .setPositiveButton("GO BACK") { _, _ ->
+                    finish()
+                }
+                .setCancelable(false)
+                .create()
+                .show()
     }
 
     private fun showLoading() {

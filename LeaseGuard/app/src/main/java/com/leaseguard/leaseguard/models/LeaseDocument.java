@@ -1,11 +1,14 @@
 package com.leaseguard.leaseguard.models;
 
+import java.util.UUID;
+
 public class LeaseDocument {
     private String title;
     private String address;
     private int rent;
     private String dateRange;
     private int numIssues;
+    private String uuid;
 
     public LeaseDocument(String title, String address, int rent, String dateRange, int numIssues) {
         this.title = title;
@@ -13,6 +16,7 @@ public class LeaseDocument {
         this.rent = rent;
         this.dateRange = dateRange;
         this.numIssues = numIssues;
+        this.uuid = UUID.randomUUID().toString();
     }
 
     public String getTitle() {
@@ -34,4 +38,6 @@ public class LeaseDocument {
     public int getNumIssues() {
         return numIssues;
     }
+
+    public String getUuid() { return uuid; }
 }

@@ -23,11 +23,28 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
             )
     )
 
+    // show loading dialog when set to true
     var isLoading: MutableLiveData<Boolean> = MutableLiveData()
+    // end activity when notified
     var endActivity: MutableLiveData<Int> = MutableLiveData()
+    // determines whether or not the lease looks safe
     var showSafeRent: MutableLiveData<Boolean> = MutableLiveData()
+    // populate the rent issues section
     var rentIssues: MutableLiveData<List<RentIssue>> = MutableLiveData()
+    // populate ui with lease details
     var leaseDetails: MutableLiveData<LeaseDocument> = MutableLiveData()
+    // if invalid document is provided, show error then exit
+    var showErrorDialog: MutableLiveData<Int> = MutableLiveData()
+
+    fun useDocument(key: String) {
+        val document = documentRepository.getDocument(key)
+        document?.let {
+            isLoading.postValue(false)
+            leaseDetails.postValue(it)
+        }?: run {
+            showErrorDialog.postValue(0)
+        }
+    }
 
     fun doAnalysis() {
         isLoading.postValue(true)
