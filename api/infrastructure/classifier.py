@@ -14,7 +14,7 @@ class ClassifierException(Exception):
     pass
 
 
-class ResultsNotAvailable(ClassifierException):
+class ClassifierResultsNotAvailable(ClassifierException):
     pass
 
 
@@ -96,14 +96,13 @@ class AwsComprehendClassifier(ClassifierInterface):
 
         status = response["DocumentClassificationJobProperties"]["JobStatus"]
         if status != "COMPLETED":
-            raise ResultsNotAvailable(status)
+            raise ClassifierResultsNotAvailable(status)
 
         # Parse S3 Output Uri
         output_s3_uri = response["DocumentClassificationJobProperties"][
             "OutputDataConfig"
         ]["S3Uri"]
         s3_parsed = parse_url(output_s3_uri)
-        print(s3_parsed)
 
         # Download output.tar.gz
         tmp_location = "/tmp/{}.tar.gz".format(self._id)

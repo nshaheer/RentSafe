@@ -14,7 +14,7 @@ class EntityRecognitionException(Exception):
     pass
 
 
-class ResultsNotAvailable(EntityRecognitionException):
+class RecognizerResultsNotAvailable(EntityRecognitionException):
     pass
 
 
@@ -93,7 +93,7 @@ class AWSComprehendEntityRecognizer(EntityRecogInterface):
 
         status = response["EntitiesDetectionJobProperties"]["JobStatus"]
         if status != "COMPLETED":
-            raise ResultsNotAvailable(status)
+            raise RecognizerResultsNotAvailable(status)
 
         # Parse S3 Output Uri
         output_s3_uri = response["EntitiesDetectionJobProperties"]["OutputDataConfig"][
