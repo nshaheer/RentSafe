@@ -9,6 +9,8 @@ import requests
 import boto3
 from s3urls import parse_url
 
+from .dummy_results import classification_job_results as dummy_results
+
 
 class ClassifierException(Exception):
     pass
@@ -35,7 +37,7 @@ class DummyClassifier(ClassifierInterface):
         return 1
 
     def get_results(self, job_id):
-        return {}
+        return dummy_results
 
 
 class AwsComprehendClassifier(ClassifierInterface):
