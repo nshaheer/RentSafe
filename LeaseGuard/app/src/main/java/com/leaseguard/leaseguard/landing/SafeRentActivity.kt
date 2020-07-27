@@ -1,7 +1,6 @@
 package com.leaseguard.leaseguard.landing
 
 import android.content.Intent
-import android.content.res.Resources
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -17,13 +16,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.leaseguard.leaseguard.BaseActivity
 import com.leaseguard.leaseguard.R
 import com.leaseguard.leaseguard.models.LeaseDocument
-import com.leinardi.android.speeddial.SpeedDialActionItem
 import kotlinx.android.synthetic.main.activity_saferent.*
 import kotlinx.android.synthetic.main.card_document.view.*
 import javax.inject.Inject
 
 
 class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
+
+    companion object {
+        val DOCUMENT_KEY = "documentKey"
+    }
+
     private val PHOTO_CODE = 1
     private val PHOTO_LIBRARY_CODE = 2
     private val PDF_CODE = 3
@@ -125,6 +128,11 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
 
         class DocumentViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             fun updateUi(leaseDocument: LeaseDocument) {
+                view.setOnClickListener {
+                    val intent = Intent(it.context, AnalyzeDocActivity::class.java)
+                    intent.putExtra(DOCUMENT_KEY, leaseDocument.uuid)
+                    view.context.startActivity(intent)
+                }
                 view.card_title.text = leaseDocument.title
                 view.card_address.text = leaseDocument.address
                 view.card_rent.text = "$" + leaseDocument.rent.toString() + "/mo"

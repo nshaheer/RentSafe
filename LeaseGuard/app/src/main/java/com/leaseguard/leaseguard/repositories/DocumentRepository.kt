@@ -4,13 +4,17 @@ import com.leaseguard.leaseguard.models.LeaseDocument
 import javax.inject.Inject
 
 class DocumentRepository @Inject constructor() {
-    private var documents: ArrayList<LeaseDocument>? = ArrayList()
+    private var documents: HashMap<String, LeaseDocument>? = HashMap()
 
     fun getDocuments(): List<LeaseDocument> {
-        return documents?: listOf()
+        return documents?.values?.toList()?: listOf()
     }
 
     fun addDocument(doc: LeaseDocument) {
-        documents?.add(doc)
+        documents?.put(doc.uuid, doc)
+    }
+
+    fun getDocument(key: String): LeaseDocument? {
+        return documents?.get(key)
     }
 }
