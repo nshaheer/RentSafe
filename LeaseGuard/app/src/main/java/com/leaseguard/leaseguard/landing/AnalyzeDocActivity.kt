@@ -57,12 +57,6 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
             showErrorThenExit()
         })
 
-        // TODO: remove this, only here for demo
-        headerImage.setOnClickListener {
-            analyzeDocViewModel.showSafeRent.postValue(switchy)
-            switchy = !switchy
-        }
-
         analyzeDocViewModel.showSafeRent.observe(this, Observer { showSafeRentPage ->
             if (showSafeRentPage) {
                 headerImage.setImageResource(R.drawable.ic_empty_success)
@@ -86,13 +80,31 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
             // update the intent to hold the newest document key
             intent.putExtra(DOCUMENT_KEY, leaseDetail.uuid)
         })
+
+        // TODO: remove this, only here for demo
+        headerImage.setOnClickListener {
+            analyzeDocViewModel.showSafeRent.postValue(switchy)
+            switchy = !switchy
+        }
+
+        ratingsButton.setOnClickListener {
+            val gmmIntentUri = Uri.parse("geo:0,0?q=Sage 2, 318 Spruce St, Waterloo, Ontario") // [Property Name, Street Address, City, Province]
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+            startActivity(mapIntent)
+        }
     }
 
     private fun populateLeaseDetails(leaseDetail: LeaseDocument) {
-        propertyField.text = leaseDetail.title
-        addressField.text = leaseDetail.address
+        // Lease Details Section
         rentAmountField.text = String.format(getText(R.string.rent_amount_per_month).toString(), leaseDetail.rent.toFloat())
-        rentalDurationField.text = leaseDetail.dateRange
+        rentDurationField.text = leaseDetail.dateRange
+        keyDepositField.text = "$50" // placeholder
+        petsAllowedField.text = if (analyzeDocViewModel.showSafeRent.value!!) "YES" else "NO" // placeholder
+        // Property Info Section
+        propertyNameField.text = leaseDetail.title
+        addressField.text = leaseDetail.address
+        landlordField.text = "Sage Corporation"
     }
 
     private fun populateRentIssues(rentIssues: List<RentIssue>) {
