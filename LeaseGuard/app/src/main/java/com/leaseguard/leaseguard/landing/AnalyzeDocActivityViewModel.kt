@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class AnalyzeDocActivityViewModel @Inject constructor(private val documentRepository: DocumentRepository) : ViewModel() {
     val rentIsSafe = false
-    val dummyDocument = LeaseDocument(0,"Luxe Waterloo", "333 King Street N", 800, "May 1, 2017 - Aug 31, 2017", 2)
+    val dummyDocument = LeaseDocument(0,"Luxe Waterloo", "333 King Street N", 600, "May 1, 2017 - Aug 31, 2017", 2)
     val dummyIssues = listOf(
             RentIssue(
                     "Rent deposit more than single month rent",
