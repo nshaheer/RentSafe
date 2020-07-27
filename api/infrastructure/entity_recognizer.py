@@ -1,7 +1,21 @@
+import json
+import os
+import tarfile
+import zipfile
 from uuid import uuid4
 from abc import ABCMeta, abstractmethod
 
+import requests
 import boto3
+from s3urls import parse_url
+
+
+class EntityRecognitionException(Exception):
+    pass
+
+
+class ResultsNotAvailable(EntityRecognitionException):
+    pass
 
 
 class EntityRecogInterface(metaclass=ABCMeta):
@@ -72,4 +86,37 @@ class AWSComprehendEntityRecognizer(EntityRecogInterface):
         return self._schedule_recognition_job()
 
     def get_results(self, job_id):
-        pass
+
+        response = self.session.client("comprehend").describe_entities_detection_job(
+            JobId=job_id
+        )
+
+        status = response["EntitiesDetectionJobProperties"]["JobStatus"]
+        if status != "COMPLETED":
+            raise ResultsNotAvailable(status)
+
+        # Parse S3 Output Uri
+        output_s3_uri = response["EntitiesDetectionJobProperties"]["OutputDataConfig"][
+            "S3Uri"
+        ]
+        s3_parsed = parse_url(output_s3_uri)
+
+        # Download output.tar.gz
+        tmp_location = "/tmp/{}.tar.gz".format(self._id)
+        self.session.client("s3").download_file(
+            s3_parsed["bucket"], s3_parsed["key"], tmp_location
+        )
+
+        # Extract output.tar.gz
+        names = []
+        with tarfile.open(tmp_location) as tar:
+            names = tar.getnames()
+            tar.extractall(path="/tmp/{}/".format(self._id))
+
+        results = []
+        for name in names:
+            # Parse JSON in output
+            with open("/tmp/{}/{}".format(self._id, name)) as json_output:
+                results.extend([json.loads(line) for line in json_output.readlines()])
+
+        return results

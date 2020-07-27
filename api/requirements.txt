@@ -3,3 +3,5 @@ pylint==2.5.2
 pymongo[tls,srv]==3.10.1
 virtualenv==20.0.21
 boto3==1.14.2
+requests
+s3urls==0.0.3
