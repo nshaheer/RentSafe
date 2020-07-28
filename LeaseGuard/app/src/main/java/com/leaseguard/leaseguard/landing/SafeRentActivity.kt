@@ -115,7 +115,7 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
 
     override fun onResume() {
         super.onResume()
-        safeRentViewModel.onReturned()
+        //safeRentViewModel.onReturned()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -135,19 +135,19 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
             fun updateUi(leaseDocument: LeaseDocument) {
                 view.setOnClickListener {
                     val intent = Intent(it.context, AnalyzeDocActivity::class.java)
-                    intent.putExtra(DOCUMENT_KEY, leaseDocument.uuid)
+                    intent.putExtra(DOCUMENT_KEY, leaseDocument.id)
                     view.context.startActivity(intent)
                 }
                 view.card_title.text = leaseDocument.title
                 view.card_address.text = leaseDocument.address
                 view.card_rent.text = "$" + leaseDocument.rent.toString() + "/mo"
-                view.card_date.text = leaseDocument.dateRange
+                view.card_date.text = leaseDocument.date
                 val issueString : String = view.context.getString(R.string.issues_found)
-                if (leaseDocument.numIssues == 0) {
+                if (leaseDocument.issues == 0) {
                     view.card_issues.text = "no " + issueString
                     view.card_issues.backgroundTintList = ContextCompat.getColorStateList(view.context, R.color.darkgreen)
                 } else {
-                    view.card_issues.text =  leaseDocument.numIssues.toString() + " " + issueString
+                    view.card_issues.text =  leaseDocument.issues.toString() + " " + issueString
                     view.card_issues.backgroundTintList = ContextCompat.getColorStateList(view.context, R.color.watchoutred)
                 }
             }
@@ -192,7 +192,7 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
                 val resultFile = data?.data
                 safeRentViewModel.onFileSelected(resultFile)
             } else if (requestCode == ANALYZE_DOC_CODE) {
-                safeRentViewModel.onReturned()
+                //safeRentViewModel.onReturned()
             }
         }
     }
