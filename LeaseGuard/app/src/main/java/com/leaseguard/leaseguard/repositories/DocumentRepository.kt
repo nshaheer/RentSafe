@@ -1,20 +1,18 @@
 package com.leaseguard.leaseguard.repositories
 
+import androidx.lifecycle.LiveData
 import com.leaseguard.leaseguard.models.LeaseDocument
+import com.leaseguard.leaseguard.database.LeaseDao
 import javax.inject.Inject
 
-class DocumentRepository @Inject constructor() {
-    private var documents: HashMap<String, LeaseDocument>? = HashMap()
+class DocumentRepository @Inject constructor(private val leaseDao: LeaseDao) {
+    private var documents: LiveData<List<LeaseDocument>> = leaseDao.getLeases()
 
-    fun getDocuments(): List<LeaseDocument> {
-        return documents?.values?.toList()?: listOf()
+    fun getDocuments(): LiveData<List<LeaseDocument>> {
+        return documents
     }
 
-    fun addDocument(doc: LeaseDocument) {
-        documents?.put(doc.uuid, doc)
-    }
-
-    fun getDocument(key: String): LeaseDocument? {
-        return documents?.get(key)
+    suspend fun addDocument(leaseDocument: LeaseDocument) {
+        leaseDao.insert(leaseDocument)
     }
 }

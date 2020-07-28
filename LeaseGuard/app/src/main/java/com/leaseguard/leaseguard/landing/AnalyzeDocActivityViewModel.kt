@@ -2,14 +2,17 @@ package com.leaseguard.leaseguard.landing
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.leaseguard.leaseguard.models.LeaseDocument
 import com.leaseguard.leaseguard.models.RentIssue
 import com.leaseguard.leaseguard.repositories.DocumentRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AnalyzeDocActivityViewModel @Inject constructor(private val documentRepository: DocumentRepository) : ViewModel() {
     val rentIsSafe = false
-    val dummyDocument = LeaseDocument("Luxe Waterloo", "333 King Street N", 600, "May 1, 2017 - Aug 31, 2017", 2)
+    val dummyDocument = LeaseDocument(0,"Luxe Waterloo", "333 King Street N", 600, "May 1, 2017 - Aug 31, 2017", 2)
     val dummyIssues = listOf(
             RentIssue(
                     "Rent deposit more than single month rent",
@@ -36,14 +39,22 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
     // if invalid document is provided, show error then exit
     var showErrorDialog: MutableLiveData<Int> = MutableLiveData()
 
-    fun useDocument(key: String) {
-        val document = documentRepository.getDocument(key)
+    fun useDocument(key: Int) {
+        // Subtract 1 because auto-increment primary key starts at 1
+        val document = documentRepository.getDocuments().value?.get(key - 1)
         document?.let {
             isLoading.postValue(false)
             leaseDetails.postValue(it)
         }?: run {
             showErrorDialog.postValue(0)
         }
+    }
+
+    /**
+     * Launching a new coroutine to insert the data in a non-blocking way
+     */
+    private fun insertDocument(leaseDocument: LeaseDocument) = viewModelScope.launch(Dispatchers.IO) {
+        documentRepository.addDocument(leaseDocument)
     }
 
     fun doAnalysis() {
@@ -55,7 +66,7 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
             showSafeRent.postValue(rentIsSafe)
             rentIssues.postValue(dummyIssues)
             leaseDetails.postValue(dummyDocument)
-            documentRepository.addDocument(dummyDocument)
+            insertDocument(dummyDocument)
         })
         thread.start()
     }

@@ -35,10 +35,10 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         supportActionBar?.title = "Analyze Document"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val documentKey: String? = intent.getStringExtra(DOCUMENT_KEY)
-        documentKey?.let {
-            analyzeDocViewModel.useDocument(it)
-        }?: run {
+        val documentKey: Int = intent.getIntExtra(DOCUMENT_KEY, -1)
+        if (documentKey != -1) {
+            analyzeDocViewModel.useDocument(documentKey)
+        } else {
             analyzeDocViewModel.doAnalysis()
         }
         analyzeDocViewModel.showErrorDialog.observe(this, Observer {
@@ -78,7 +78,7 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         analyzeDocViewModel.leaseDetails.observe(this, Observer { leaseDetail ->
             populateLeaseDetails(leaseDetail)
             // update the intent to hold the newest document key
-            intent.putExtra(DOCUMENT_KEY, leaseDetail.uuid)
+            intent.putExtra(DOCUMENT_KEY, leaseDetail.id)
         })
 
         // TODO: remove this, only here for demo
@@ -103,7 +103,7 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
     private fun populateLeaseDetails(leaseDetail: LeaseDocument) {
         // Lease Details Section
         rentAmountField.text = String.format(getText(R.string.rent_amount_per_month).toString(), leaseDetail.rent.toFloat())
-        rentDurationField.text = leaseDetail.dateRange
+        rentDurationField.text = leaseDetail.date
         keyDepositField.text = "$50" // placeholder
         petsAllowedField.text = if (analyzeDocViewModel.showSafeRent.value!!) "YES" else "NO" // placeholder
         // Property Info Section
