@@ -115,7 +115,6 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
 
     override fun onResume() {
         super.onResume()
-        //safeRentViewModel.onReturned()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -191,8 +190,6 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
             } else if (requestCode == PDF_CODE) {
                 val resultFile = data?.data
                 safeRentViewModel.onFileSelected(resultFile)
-            } else if (requestCode == ANALYZE_DOC_CODE) {
-                //safeRentViewModel.onReturned()
             }
         }
     }
