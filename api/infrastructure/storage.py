@@ -28,10 +28,15 @@ class StorageInterface(metaclass=ABCMeta):
     def update_lease(self, lease_id, update):
         pass
 
+    @abstractmethod
+    def add_job(self, lease_id, job_type, job_id):
+        pass
+
 
 class MemStorage(StorageInterface):
     def __init__(self):
         self.leases = {}
+        self.jobs = {}
 
     def add_lease(self, lease):
         lease_id = str(uuid4())
@@ -50,6 +55,16 @@ class MemStorage(StorageInterface):
         self.leases[lease_id] = lease
         return lease
 
+    def add_job(self, lease_id, job_type, job_id):
+        _id = str(uuid4())
+
+        self.jobs[_id] = {
+            "lease_id": lease_id,
+            "job_type": job_type,
+            "job_id": job_id,
+            "status": "PENDING",
+        }
+
 
 class MongoStorage(StorageInterface):
     def __init__(self):
@@ -60,6 +75,7 @@ class MongoStorage(StorageInterface):
             ssl_cert_reqs=CERT_NONE,
         )
         self.leases = conn["rent-safe"]["leases"]
+        self.jobs = conn["rent-safe"]["jobs"]
 
     def add_lease(self, lease):
         return self.leases.insert_one(lease).inserted_id
@@ -74,3 +90,13 @@ class MongoStorage(StorageInterface):
             raise UpdateFailedException()
 
         return self.leases.find_one({"_id": ObjectId(lease_id)})
+
+    def add_job(self, lease_id, job_type, job_id):
+        return self.jobs.insert_on(
+            {
+                "lease_id": lease_id,
+                "job_type": job_type,
+                "job_id": job_id,
+                "status": "PENDING",
+            }
+        )
