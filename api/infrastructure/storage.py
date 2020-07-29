@@ -36,6 +36,10 @@ class StorageInterface(metaclass=ABCMeta):
     def get_pending_jobs(self):
         pass
 
+    @abstractmethod
+    def mark_job_completed(self, job_id):
+        pass
+
 
 class MemStorage(StorageInterface):
     def __init__(self):
@@ -71,6 +75,9 @@ class MemStorage(StorageInterface):
 
     def get_pending_jobs(self):
         return [j for j in self.jobs.values() if j["status"] == "PENDING"]
+
+    def mark_job_completed(self, job_id):
+        self.jobs[job_id]["status"] = "COMPLETED"
 
 
 class MongoStorage(StorageInterface):
@@ -109,4 +116,7 @@ class MongoStorage(StorageInterface):
         )
 
     def get_pending_jobs(self):
-        return []
+        return self.jobs.find({"status": "PENDING"})
+
+    def mark_job_completed(self, job_id):
+        return self.jobs.update_one({"job_id": job_id}, {"status": "COMPLETE"})

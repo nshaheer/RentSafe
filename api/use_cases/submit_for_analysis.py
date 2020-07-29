@@ -14,11 +14,9 @@ class SubmitForAnalysis:
     def execute(self, request: Request) -> Response:
 
         lease_props = {
-            "status": {
-                "extraction": "PENDING",
-                "entity_recognition": "PENDING",
-                "classification": "PENDING",
-            },
+            "extraction_status": "PENDING",
+            "entity_recognition_status": "PENDING",
+            "classification_status": "PENDING",
         }
 
         lease_id = self.storage.add_lease(lease_props)

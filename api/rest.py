@@ -24,14 +24,13 @@ def root():
 
 @app.route("/leases", methods=["POST"])
 def submit_for_analysis():
-    data = request.get_json()
 
     extractor = DummyExtractor()
     storage = MongoStorage()
 
     submit = SubmitForAnalysis(extractor, storage)
 
-    response = submit.execute(Request({"paragraphs": data["paragraphs"]}))
+    response = submit.execute(Request({"lease_file_path": "/tmp/somefile.pdf"}))
 
     return Response(json.dumps(response.data, default=str), mimetype="application/json")
 
