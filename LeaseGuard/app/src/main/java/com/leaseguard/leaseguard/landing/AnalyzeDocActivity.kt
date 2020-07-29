@@ -156,6 +156,10 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
 //                }
                 return true
             }
+            R.id.action_delete -> {
+                // TODO:
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

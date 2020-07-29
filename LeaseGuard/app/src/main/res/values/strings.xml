@@ -24,4 +24,6 @@
     <string name="pets_allowed">Pets Allowed</string>
     <string name="key_deposit">Key Deposit</string>
     <string name="see_ratings_reviews">SEE RATINGS/REVIEWS</string>
+    <string name="share_document">Share Document</string>
+    <string name="delete_document">Delete Document</string>
 </resources>
