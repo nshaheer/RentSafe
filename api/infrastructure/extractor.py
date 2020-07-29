@@ -4,6 +4,11 @@ from google.cloud import vision
 from google.cloud import storage
 from google.protobuf import json_format
 
+from uuid import uuid4
+from abc import ABCMeta, abstractmethod
+
+from .dummy_results import extraction_job_results as dummy_results
+
 class GVisionDocumentTextExtractor:
     def __init__(self):
         self.bucket_file_storage_path = "gs://cs446-lease-files/"
@@ -111,3 +116,30 @@ class GVisionDocumentTextExtractor:
         self.upload_PDF_to_bucket(lease_id, document_path)
         paragraphs = self.detect_document(self.bucket_file_storage_path + str(lease_id), self.bucket_paragraph_output_path + str(lease_id))
         return paragraphs
+
+
+
+class ExtractorException(Exception):
+    pass
+
+
+class ExtractorResultsNotAvailable(ExtractorException):
+    pass
+
+
+class ExtractorInteface(metaclass=ABCMeta):
+    @abstractmethod
+    def extract(self, lease_id, document_path):
+        pass
+
+    @abstractmethod
+    def get_results(self, job_id):
+        pass
+
+
+class DummyExtractor(ExtractorInteface):
+    def extract(self, lease_id, document_path):
+        return str(uuid4())
+
+    def get_results(self, job_id):
+        return dummy_results

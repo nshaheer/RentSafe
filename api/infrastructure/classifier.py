@@ -5,7 +5,6 @@ import zipfile
 from uuid import uuid4
 from abc import ABCMeta, abstractmethod
 
-import requests
 import boto3
 from s3urls import parse_url
 

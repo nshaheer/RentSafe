@@ -1,7 +1,6 @@
 package com.leaseguard.leaseguard.landing
 
 import android.content.Intent
-import android.content.res.Resources
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -17,13 +16,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.leaseguard.leaseguard.BaseActivity
 import com.leaseguard.leaseguard.R
 import com.leaseguard.leaseguard.models.LeaseDocument
-import com.leinardi.android.speeddial.SpeedDialActionItem
 import kotlinx.android.synthetic.main.activity_saferent.*
 import kotlinx.android.synthetic.main.card_document.view.*
 import javax.inject.Inject
 
 
 class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
+
+    companion object {
+        val DOCUMENT_KEY = "documentKey"
+    }
+
     private val PHOTO_CODE = 1
     private val PHOTO_LIBRARY_CODE = 2
     private val PDF_CODE = 3
@@ -110,6 +113,10 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         recyclerDocumentList.adapter = viewAdapter
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             android.R.id.home -> {
@@ -125,16 +132,21 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
 
         class DocumentViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             fun updateUi(leaseDocument: LeaseDocument) {
+                view.setOnClickListener {
+                    val intent = Intent(it.context, AnalyzeDocActivity::class.java)
+                    intent.putExtra(DOCUMENT_KEY, leaseDocument.id)
+                    view.context.startActivity(intent)
+                }
                 view.card_title.text = leaseDocument.title
                 view.card_address.text = leaseDocument.address
                 view.card_rent.text = "$" + leaseDocument.rent.toString() + "/mo"
-                view.card_date.text = leaseDocument.dateRange
+                view.card_date.text = leaseDocument.date
                 val issueString : String = view.context.getString(R.string.issues_found)
-                if (leaseDocument.numIssues == 0) {
+                if (leaseDocument.issues == 0) {
                     view.card_issues.text = "no " + issueString
                     view.card_issues.backgroundTintList = ContextCompat.getColorStateList(view.context, R.color.darkgreen)
                 } else {
-                    view.card_issues.text =  leaseDocument.numIssues.toString() + " " + issueString
+                    view.card_issues.text =  leaseDocument.issues.toString() + " " + issueString
                     view.card_issues.backgroundTintList = ContextCompat.getColorStateList(view.context, R.color.watchoutred)
                 }
             }
@@ -178,8 +190,6 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
             } else if (requestCode == PDF_CODE) {
                 val resultFile = data?.data
                 safeRentViewModel.onFileSelected(resultFile)
-            } else if (requestCode == ANALYZE_DOC_CODE) {
-                safeRentViewModel.onReturned()
             }
         }
     }

@@ -1,17 +1,17 @@
 package com.leaseguard.leaseguard.landing
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import com.leaseguard.leaseguard.BaseActivity
 import com.leaseguard.leaseguard.R
+import com.leaseguard.leaseguard.landing.SafeRentActivity.Companion.DOCUMENT_KEY
 import com.leaseguard.leaseguard.models.LeaseDocument
 import com.leaseguard.leaseguard.models.RentIssue
 import kotlinx.android.synthetic.main.activity_analyzedoc.*
@@ -35,6 +35,16 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         supportActionBar?.title = "Analyze Document"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        val documentKey: Int = intent.getIntExtra(DOCUMENT_KEY, -1)
+        if (documentKey != -1) {
+            analyzeDocViewModel.useDocument(documentKey)
+        } else {
+            analyzeDocViewModel.doAnalysis()
+        }
+        analyzeDocViewModel.showErrorDialog.observe(this, Observer {
+
+        })
+
         //TODO: save state and restore
         analyzeDocViewModel.isLoading.observe(this, Observer { isLoading ->
             if (isLoading) {
@@ -44,14 +54,8 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
             }
         })
         analyzeDocViewModel.endActivity.observe(this, Observer {
-            finish()
+            showErrorThenExit()
         })
-
-        // TODO: remove this, only here for demo
-        headerImage.setOnClickListener {
-            analyzeDocViewModel.showSafeRent.postValue(switchy)
-            switchy = !switchy
-        }
 
         analyzeDocViewModel.showSafeRent.observe(this, Observer { showSafeRentPage ->
             if (showSafeRentPage) {
@@ -73,14 +77,39 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         })
         analyzeDocViewModel.leaseDetails.observe(this, Observer { leaseDetail ->
             populateLeaseDetails(leaseDetail)
+            // update the intent to hold the newest document key
+            intent.putExtra(DOCUMENT_KEY, leaseDetail.id)
         })
+
+        // TODO: remove this, only here for demo
+        headerImage.setOnClickListener {
+            analyzeDocViewModel.showSafeRent.postValue(switchy)
+            switchy = !switchy
+        }
+
+        ratingsButton.setOnClickListener {
+            val gmmIntentUri = Uri.parse("geo:0,0?q=King Street Towers, 333 King St N, Waterloo, Ontario") // [Property Name, Street Address, City, Province]
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+            startActivity(mapIntent)
+        }
+
+        signLeaseButton.setOnClickListener {
+            val intent = Intent(this, SignLeaseActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun populateLeaseDetails(leaseDetail: LeaseDocument) {
-        propertyField.text = leaseDetail.title
-        addressField.text = leaseDetail.address
+        // Lease Details Section
         rentAmountField.text = String.format(getText(R.string.rent_amount_per_month).toString(), leaseDetail.rent.toFloat())
-        rentalDurationField.text = leaseDetail.dateRange
+        rentDurationField.text = leaseDetail.date
+        keyDepositField.text = "$50" // placeholder
+        petsAllowedField.text = "NO" //if (analyzeDocViewModel.showSafeRent.value!!) "YES" else "NO" // placeholder
+        // Property Info Section
+        propertyNameField.text = leaseDetail.title
+        addressField.text = leaseDetail.address
+        landlordField.text = "Sage Corporation"
     }
 
     private fun populateRentIssues(rentIssues: List<RentIssue>) {
@@ -127,13 +156,24 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
 //                }
                 return true
             }
+            R.id.action_delete -> {
+                // TODO:
+                return true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        analyzeDocViewModel.doAnalysis()
+    private fun showErrorThenExit() {
+        AlertDialog.Builder(this)
+                .setTitle("Invalid document")
+                .setMessage("Something went wrong while reading this document")
+                .setPositiveButton("GO BACK") { _, _ ->
+                    finish()
+                }
+                .setCancelable(false)
+                .create()
+                .show()
     }
 
     private fun showLoading() {

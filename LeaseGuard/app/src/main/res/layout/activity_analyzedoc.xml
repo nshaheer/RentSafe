@@ -8,7 +8,6 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonCTAContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0">
@@ -61,7 +60,7 @@
                 android:orientation="vertical" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/detailsContainer"
+                android:id="@+id/leaseDetailsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/generic_margin_16dp"
@@ -69,7 +68,7 @@
                 android:padding="@dimen/generic_margin_16dp">
 
                 <TextView
-                    android:id="@+id/leaseDetail"
+                    android:id="@+id/leaseDetailLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/lease_details"
@@ -79,58 +78,14 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/propertyName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/generic_margin_8dp"
-                    android:text="@string/property_name"
-                    android:theme="@style/BaseText.Text11"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/leaseDetail" />
-
-                <TextView
-                    android:id="@+id/propertyField"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/generic_margin_8dp"
-                    android:text=""
-                    android:theme="@style/BaseText.Text11"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1"
-                    app:layout_constraintStart_toEndOf="@id/propertyName"
-                    app:layout_constraintTop_toBottomOf="@id/leaseDetail" />
-
-                <TextView
-                    android:id="@+id/addressText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/generic_margin_8dp"
-                    android:text="@string/address"
-                    android:theme="@style/BaseText.Text11"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/propertyName" />
-
-                <TextView
-                    android:id="@+id/addressField"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/generic_margin_8dp"
-                    android:text=""
-                    android:theme="@style/BaseText.Text11"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1"
-                    app:layout_constraintStart_toEndOf="@id/addressText"
-                    app:layout_constraintTop_toBottomOf="@id/propertyField" />
-
-                <TextView
-                    android:id="@+id/rentAmount"
+                    android:id="@+id/rentAmountLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/generic_margin_8dp"
                     android:text="@string/rent_amount"
                     android:theme="@style/BaseText.Text11"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/addressText" />
+                    app:layout_constraintTop_toBottomOf="@id/leaseDetailLabel" />
 
                 <TextView
                     android:id="@+id/rentAmountField"
@@ -141,21 +96,21 @@
                     android:theme="@style/BaseText.Text11"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1"
-                    app:layout_constraintStart_toEndOf="@id/rentAmount"
-                    app:layout_constraintTop_toBottomOf="@id/addressField" />
+                    app:layout_constraintStart_toEndOf="@id/rentAmountLabel"
+                    app:layout_constraintTop_toBottomOf="@id/leaseDetailLabel" />
 
                 <TextView
-                    android:id="@+id/rentalDuration"
+                    android:id="@+id/rentDurationLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/generic_margin_8dp"
                     android:text="@string/rental_duration"
                     android:theme="@style/BaseText.Text11"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rentAmount" />
+                    app:layout_constraintTop_toBottomOf="@id/rentAmountLabel" />
 
                 <TextView
-                    android:id="@+id/rentalDurationField"
+                    android:id="@+id/rentDurationField"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/generic_margin_8dp"
@@ -163,35 +118,173 @@
                     android:theme="@style/BaseText.Text11"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1"
-                    app:layout_constraintStart_toEndOf="@id/rentalDuration"
-                    app:layout_constraintTop_toBottomOf="@id/rentAmountField" />
+                    app:layout_constraintStart_toEndOf="@id/rentDurationLabel"
+                    app:layout_constraintTop_toBottomOf="@id/rentAmountLabel" />
+
+                <TextView
+                    android:id="@+id/keyDepositLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text="@string/key_deposit"
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rentDurationLabel" />
+
+                <TextView
+                    android:id="@+id/keyDepositField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text=""
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@id/keyDepositLabel"
+                    app:layout_constraintTop_toBottomOf="@id/rentDurationLabel" />
+
+                <TextView
+                    android:id="@+id/petsAllowedLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text="@string/pets_allowed"
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/keyDepositLabel" />
+
+                <TextView
+                    android:id="@+id/petsAllowedField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text=""
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@id/petsAllowedLabel"
+                    app:layout_constraintTop_toBottomOf="@id/keyDepositLabel" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/propertyInfoContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/generic_margin_8dp"
+                android:background="@color/lightergrey"
+                android:padding="@dimen/generic_margin_16dp">
+
+                <TextView
+                    android:id="@+id/propertyInfoLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/property_info"
+                    android:textStyle="bold"
+                    android:theme="@style/BaseText.Text12"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/propertyNameLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text="@string/property_name"
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/propertyInfoLabel" />
+
+                <TextView
+                    android:id="@+id/propertyNameField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text=""
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@id/propertyNameLabel"
+                    app:layout_constraintTop_toBottomOf="@id/propertyInfoLabel" />
+
+                <TextView
+                    android:id="@+id/addressLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text="@string/address"
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/propertyNameLabel" />
+
+                <TextView
+                    android:id="@+id/addressField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text=""
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@id/addressLabel"
+                    app:layout_constraintTop_toBottomOf="@id/propertyNameLabel" />
+
+                <TextView
+                    android:id="@+id/landlordLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text="@string/landlord"
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/addressLabel" />
+
+                <TextView
+                    android:id="@+id/landlordField"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/generic_margin_8dp"
+                    android:text=""
+                    android:theme="@style/BaseText.Text11"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@id/landlordLabel"
+                    app:layout_constraintTop_toBottomOf="@id/addressLabel" />
+
+                <Button
+                    android:id="@+id/ratingsButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="@string/see_ratings_reviews"
+                    android:textSize="8dp"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/darkblack"
+                    app:icon="@drawable/ic_chevron_right"
+                    app:iconSize="12dp"
+                    app:iconGravity="end"
+                    app:iconPadding="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/landlordLabel" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/buttonCTAContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/generic_margin_16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <Button
+                    android:id="@+id/signLeaseButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/generic_margin_16dp"
+                    android:background="@color/bluishblue"
+                    android:text="@string/sign_lease"
+                    android:textColor="@color/white" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
-    <LinearLayout
-        android:id="@id/buttonCTAContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:layout_width="170dp"
-            android:layout_height="36dp"
-            android:layout_marginBottom="@dimen/generic_margin_8dp"
-            android:background="@color/bluishblue"
-            android:text="@string/sign_lease"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/generic_margin_24dp"
-            android:text="@string/edit_lease_details_manually"
-            android:textColor="@color/darkblack"
-            android:theme="@style/BaseText.Text10" />
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

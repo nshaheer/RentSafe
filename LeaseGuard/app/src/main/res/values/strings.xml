@@ -19,4 +19,11 @@
     <string name="pdf">PDF</string>
     <string name="google_drive">Google Drive</string>
     <string name="issues_found">issues found</string>
+    <string name="landlord">Landlord</string>
+    <string name="property_info">PROPERTY INFO</string>
+    <string name="pets_allowed">Pets Allowed</string>
+    <string name="key_deposit">Key Deposit</string>
+    <string name="see_ratings_reviews">SEE RATINGS/REVIEWS</string>
+    <string name="share_document">Share Document</string>
+    <string name="delete_document">Delete Document</string>
 </resources>
