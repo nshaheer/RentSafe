@@ -105,7 +105,7 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         rentAmountField.text = String.format(getText(R.string.rent_amount_per_month).toString(), leaseDetail.rent.toFloat())
         rentDurationField.text = leaseDetail.date
         keyDepositField.text = "$50" // placeholder
-        petsAllowedField.text = if (analyzeDocViewModel.showSafeRent.value!!) "YES" else "NO" // placeholder
+        petsAllowedField.text = "NO" //if (analyzeDocViewModel.showSafeRent.value!!) "YES" else "NO" // placeholder
         // Property Info Section
         propertyNameField.text = leaseDetail.title
         addressField.text = leaseDetail.address
