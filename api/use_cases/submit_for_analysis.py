@@ -22,7 +22,7 @@ class SubmitForAnalysis:
         lease_id = self.storage.add_lease(lease_props)
 
         file_path = request.data["lease_file_path"]
-        extraction_job_id = self.extractor.start_extraction(lease_id, file_path)
+        extraction_job_id = self.extractor.extract(lease_id, file_path)
 
         self.storage.add_job(lease_id, "extraction", extraction_job_id)
 

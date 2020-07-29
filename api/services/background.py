@@ -29,11 +29,11 @@ class BackgroundService:
             self.process_job(job)
 
     def process_job(self, job):
-        if job["type"] == "extraction":
+        if job["job_type"] == "extraction":
             self.process_extraction_job(job)
-        if job["type"] == "recognition":
+        if job["job_type"] == "recognition":
             self.process_recognition_job(job)
-        if job["type"] == "classification":
+        if job["job_type"] == "classification":
             self.process_classification_job(job)
 
     def process_classification_job(self, job):
@@ -60,13 +60,14 @@ class BackgroundService:
 
             self.storage.update_lease(job["lease_id"], analysis)
             self.storage.mark_job_completed(job["job_id"])
-        except ClassifierResultsNotAvailable as _:
+        except RecognizerResultsNotAvailable as _:
             pass
 
     def process_extraction_job(self, job):
 
         try:
             results = self.extractor.get_results(job["job_id"])
+
             self.storage.update_lease(
                 job["lease_id"], {"extraction_status": "COMPLETED"}
             )

@@ -100,13 +100,13 @@ class MongoStorage(StorageInterface):
     def update_lease(self, lease_id, update):
         result = self.leases.update_one({"_id": ObjectId(lease_id)}, {"$set": update})
 
-        if result.modified_count != 1:
+        if result.modified_count != 1 and result.matched_count != 1:
             raise UpdateFailedException()
 
         return self.leases.find_one({"_id": ObjectId(lease_id)})
 
     def add_job(self, lease_id, job_type, job_id):
-        return self.jobs.insert_on(
+        return self.jobs.insert_one(
             {
                 "lease_id": lease_id,
                 "job_type": job_type,
@@ -119,4 +119,6 @@ class MongoStorage(StorageInterface):
         return self.jobs.find({"status": "PENDING"})
 
     def mark_job_completed(self, job_id):
-        return self.jobs.update_one({"job_id": job_id}, {"status": "COMPLETE"})
+        return self.jobs.update_one(
+            {"job_id": job_id}, {"$set": {"status": "COMPLETE"}}
+        )
