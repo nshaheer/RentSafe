@@ -32,6 +32,10 @@ class StorageInterface(metaclass=ABCMeta):
     def add_job(self, lease_id, job_type, job_id):
         pass
 
+    @abstractmethod
+    def get_pending_jobs(self):
+        pass
+
 
 class MemStorage(StorageInterface):
     def __init__(self):
@@ -64,6 +68,9 @@ class MemStorage(StorageInterface):
             "job_id": job_id,
             "status": "PENDING",
         }
+
+    def get_pending_jobs(self):
+        return [j for j in self.jobs.values() if j["status"] == "PENDING"]
 
 
 class MongoStorage(StorageInterface):
@@ -100,3 +107,6 @@ class MongoStorage(StorageInterface):
                 "status": "PENDING",
             }
         )
+
+    def get_pending_jobs(self):
+        return []

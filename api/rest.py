@@ -7,6 +7,7 @@ from flask import Flask, request, Response
 from infrastructure.classifier import AwsComprehendClassifier
 from infrastructure.storage import MongoStorage
 from infrastructure.entity_recognizer import AWSComprehendEntityRecognizer
+from infrastructure.extractor import DummyExtractor
 
 from request import Request
 
@@ -25,13 +26,10 @@ def root():
 def submit_for_analysis():
     data = request.get_json()
 
-    bucket = "rent-safe"
-
-    recognizer = AWSComprehendEntityRecognizer(bucket)
-    classifier = AwsComprehendClassifier(bucket)
+    extractor = DummyExtractor()
     storage = MongoStorage()
 
-    submit = SubmitForAnalysis(storage, classifier, recognizer)
+    submit = SubmitForAnalysis(extractor, storage)
 
     response = submit.execute(Request({"paragraphs": data["paragraphs"]}))
 
