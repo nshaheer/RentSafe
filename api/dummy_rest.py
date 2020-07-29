@@ -4,9 +4,10 @@ import json
 
 from flask import Flask, request, Response
 
+from infrastructure.extractor import DummyExtractor
 from infrastructure.classifier import DummyClassifier
-from infrastructure.storage import MemStorage
 from infrastructure.entity_recognizer import DummyEntityRecog
+from infrastructure.storage import MemStorage
 
 from request import Request
 
@@ -15,9 +16,9 @@ from use_cases.get_analysis_results import GetAnalysis
 
 app = Flask(__name__)
 
-recognizer = DummyEntityRecog()
-classifier = DummyClassifier()
 storage = MemStorage()
+classifier = DummyClassifier()
+recognizer = DummyEntityRecog()
 
 
 @app.route("/", methods=["GET"])
@@ -29,7 +30,8 @@ def root():
 def submit_for_analysis():
     data = request.get_json()
 
-    submit = SubmitForAnalysis(storage, classifier, recognizer)
+    extractor = DummyExtractor()
+    submit = SubmitForAnalysis(extractor, storage)
 
     response = submit.execute(Request({"paragraphs": data["paragraphs"]}))
 
