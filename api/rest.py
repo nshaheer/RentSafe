@@ -1,8 +1,10 @@
 # API Server
 
+import os
 import json
 
-from flask import Flask, request, Response
+from flask import Flask, request, Response, redirect, url_for
+from werkzeug.utils import secure_filename
 
 from infrastructure.classifier import AwsComprehendClassifier
 from infrastructure.storage import MongoStorage
@@ -14,7 +16,18 @@ from request import Request
 from use_cases.submit_for_analysis import SubmitForAnalysis
 from use_cases.get_analysis_results import GetAnalysis
 
+
+UPLOAD_FOLDER = "/tmp"
+ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg", "gif"}
+
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 app = Flask(__name__)
+
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
 @app.route("/", methods=["GET"])
@@ -24,15 +37,28 @@ def root():
 
 @app.route("/leases", methods=["POST"])
 def submit_for_analysis():
+    if "file" not in request.files:
+        return {"status": "failed", "message": "No file provided"}
 
-    extractor = DummyExtractor()
-    storage = MongoStorage()
+    lease_doc = request.files["file"]
 
-    submit = SubmitForAnalysis(extractor, storage)
+    if lease_doc and allowed_file(lease_doc.filename):
+        filename = secure_filename(lease_doc.filename)
+        filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        lease_doc.save(filepath)
 
-    response = submit.execute(Request({"lease_file_path": "/tmp/somefile.pdf"}))
+        extractor = DummyExtractor()
+        storage = MongoStorage()
 
-    return Response(json.dumps(response.data, default=str), mimetype="application/json")
+        submit = SubmitForAnalysis(extractor, storage)
+
+        response = submit.execute(Request({"lease_file_path": filepath}))
+
+        return Response(
+            json.dumps(response.data, default=str), mimetype="application/json"
+        )
+
+    return {"status": "failed", "message": "invalid file"}
 
 
 @app.route("/leases/<lease_id>", methods=["GET"])
