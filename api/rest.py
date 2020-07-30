@@ -16,6 +16,8 @@ from request import Request
 from use_cases.submit_for_analysis import SubmitForAnalysis
 from use_cases.get_analysis_results import GetAnalysis
 
+from celery_app import make_celery
+
 
 UPLOAD_FOLDER = "/tmp"
 ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg", "gif"}
@@ -28,6 +30,11 @@ def allowed_file(filename):
 app = Flask(__name__)
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config.update(
+    CELERY_BROKER_URL="redis://redis:6379", CELERY_RESULT_BACKEND="redis://redis:6379"
+)
+
+celery = make_celery(app)
 
 
 @app.route("/", methods=["GET"])

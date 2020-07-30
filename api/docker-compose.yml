@@ -16,4 +16,21 @@ services:
     volumes:
       - .:/code    
     ports:
-      - "8001:5000"
+      - "5000:5000"
+    depends_on:
+      - redis
+      - celery
+  redis:
+    image: "redis:4-alpine3.10"
+    container_name: redis
+    ports:
+      - 6739:6739
+  celery:
+    environment:
+      - DOCKER_CONTAINER=2
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    command: celery -A rest.celery worker -l info
+    volumes:
+      - .:/code

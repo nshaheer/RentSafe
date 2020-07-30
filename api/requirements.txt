@@ -10,3 +10,5 @@ preview-generator==0.14
 google-cloud-vision==1.0.0
 google-cloud-storage==1.30.0
 google-api-python-client==1.10.0
+celery==4.4.6
+redis==3.5.3

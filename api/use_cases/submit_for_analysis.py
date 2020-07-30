@@ -33,6 +33,7 @@ class SubmitForAnalysis:
 
         lease_id = self.storage.add_lease(lease_props)
 
+        # Celery Task
         paragraphs = self.extractor.extract(lease_id, file_path)
 
         classification_job_id = self.classifier.classify(paragraphs)
