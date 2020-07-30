@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "cs446-lease-reading",
+  "private_key_id": "2e6dc8dfcfe3220ea44533616d7a1e4e8bfb92cf",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCjMnJPycDL7HC2\nCAPwmO21YPtp8lQuBK9q2atCPjaHkIwAzB7mCMCj5s23PUQPc1pyoChE5HaY8tEM\nIUwNQ+ieM28YEDxE0mTWRy4rzdP9zJJbjq5miqoRVWaM8K+NZjf4teq2xiS5ZIny\nN1xonBmA+ynpfy+UrJrkibsA6riUgNMgfHztSSH/HFT0xUOqMBtVk4USo2AungYd\n6P0iaVOndJZm5fphh5SigV86SPNzUgb9TlRsBogUjqljKbCZeVHMZ1qlIKQ07z0s\nqS76hUjW0t0Q/HlVwv4xhEuupc5qS/jcXwCbqsPAxY5A2rvsKAOCll5LCRGHTcRD\nWU8B72OVAgMBAAECggEABD/ENuMuY66RqGqFcE+cK67frOomY6kzbOS1ipg2gxvN\nbxi848lkshIRsrEtB7EZHpAy0Mj0mUPfgRhG2G3b/7egHRTHtPBzbqyLD7VXTS2+\nK8w+TzdSC4tZMI4ZJ3eNFM95doBhgEKDF4iawiCDfcRMWrU5HZE5Ncdi1ErszT4k\nJSshtG2Li0RmjLMdbIh9hOWuvHq0oZT2gLFIUtJIomURtMIqA0SQWfQ5sm8qPTwL\n17RPW2xTY81gwkmDqC10ZTD7ywGRjDlxKQWCBN2DK/6Sqij2H6sgEhjV5V1hrSiI\nKwc+HjeWV0wpzK1e+77TYGAQL61DY3YwN2u39s1sywKBgQDlsUUbBZVNDST7DhT+\nbb4URMO9aIvMcB20VEELxwTBtjMSRUYzJMLhZGK3EZz/2Sg/loqcXhIWPqatAxaV\nVyyo8r1y8WnEPhHvf5GVSqOHhUAA0OVZWNpIn9iUEANpps4V1bWtPicgYlCqe2EF\nfG1aBugXvn/4bE4xMOZFbB6C8wKBgQC1430fCZ/s3ttVlAJ0wwWgBkpKDoBNDIXQ\nn4UXWhSBS3S++oTGilIobsKJ9/9ypb9a7SJFDkqyDKh4575051LHQHCWGXbb1mVU\nw9mD4IofeytkiVwVjWFI10loWpOp0CNGZjiBMaSwYpIsYFecZmRNl+1U1HA0htW+\nZyDGh9ZRVwKBgQDZX4hs6D3Ba70hstP/bVBD0kgESppy4W/bJxlf0fsYcBupINIs\nuI+Nyvj5E7wnDRZgB1IqZYRsdOI8Pf3zW0qyoPbVfs5/n9ZNd8cJKFfWey51FzzV\n75a0wEGw7e6s3+WNGHEVAQr6RNDeZmENVhIO7xZa0jg9nBHrz8E81fOSLQKBgG35\nOuiuQBTO9hy7HfUNCXSk+Pvn4qkzXiEyohzpaSZ3wgHKpMcKUPyDY3paCQh/sMBA\nSo0oQ/99acuYiu5SAxnYG3qVsOjgq2nh9L0o4TqBlU33Q0cAsYaCLK88vLVa1Ek3\newiaRHIlVy4fnjlBK3pC1suImsMXl1rFLer7rJiHAoGBANaTrC7iGXgnOrV6dFJB\nl8rcQhcURmTW146WR72gtOrXBLQDD2W3Ha0x+sisZtNcFvNwDQdE/ISa8/0UTJ1j\nZNzyx31OzDEUKlLlIJIDLcCvAyzYTJVQp99kOf9R+Jor+WcPHLnZe1A3xugc3RXC\n2UrvJS+KE0oj16pURG+O68pb\n-----END PRIVATE KEY-----\n",
+  "client_email": "cs446-reader@cs446-lease-reading.iam.gserviceaccount.com",
+  "client_id": "100406013856070739353",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cs446-reader%40cs446-lease-reading.iam.gserviceaccount.com"
+}
