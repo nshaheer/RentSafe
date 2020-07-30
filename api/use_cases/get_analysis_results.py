@@ -27,7 +27,7 @@ class GetAnalysis:
 
         lease = self.storage.get_lease(lease_id)
 
-        if lease["status"] == "PENDING":
+        if lease["Status"] == "PENDING":
             try:
                 c_results = self.classifier.get_results(lease["ClassificationJobId"])
                 r_results = self.entity_recog.get_results(
@@ -45,7 +45,8 @@ class GetAnalysis:
                 lease = self.storage.update_lease(lease_id, lease_update)
 
             except (ClassifierResultsNotAvailable, RecognizerResultsNotAvailable) as _:
-                return Response({"lease": lease})
+                formatted_lease = LeaseFormatterService.format_lease_for_android(lease)
+                return Response({"Lease": formatted_lease})
 
         formatted_lease = LeaseFormatterService.format_lease_for_android(lease)
-        return Response({"lease": formatted})
+        return Response({"Lease": formatted_lease})

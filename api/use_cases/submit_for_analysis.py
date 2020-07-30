@@ -50,4 +50,4 @@ class SubmitForAnalysis:
         formatted_lease = LeaseFormatterService.format_lease_for_android(
             self.storage.get_lease(lease_id)
         )
-        return Response({"lease": formatted_lease})
+        return Response({"Lease": formatted_lease})
