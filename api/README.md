@@ -42,4 +42,4 @@ To run a faster API that returns mock data for local testing, `cd api && export 
 A Postman export is available in `docs/` to visualize the exact requests and responses.
 
 ## Background Tasks
-`celery worker -A app.celery -l INFO`
+`celery worker -A app.celery --beat -l INFO`
