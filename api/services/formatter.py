@@ -20,13 +20,18 @@ class LeaseFormatterService:
                 }
             )
 
+        amounts = lease.get("Amounts", None)
+        dates = lease.get("Dates", None)
+        locations = lease.get("Locations", None)
+        orgs = lease.get("Organizations", None)
+
         return {
             "Id": lease["_id"],
             "Thumbnail": lease["ThumbnailString"],
             "Status": lease["Status"],
             "Issues": issues,
-            "Dates": " - ".join(lease.get("dates", [])),
-            "Address": lease.get("locations", [""])[0],
-            "Rent": lease.get("amounts", [""])[0],
-            "Title": lease.get("organizations", [""])[0],
+            "Dates": " - ".join(dates[:2]) if dates else "",
+            "Address": locations[0] if locations else "",
+            "Rent": amounts[0] if amounts else "",
+            "Title": orgs[0] if orgs else "",
         }
