@@ -19,6 +19,7 @@ from use_cases.submit_lease_for_analysis import SubmitLeaseForAnalysis
 from use_cases.submit_text_for_analysis import SubmitTextForAnalysis
 from use_cases.process_pending_analysis import ProcessPendingAnalysis
 from use_cases.get_analysis_results import GetAnalysis
+from use_cases.get_lease_thumbnail import GetLeaseThumbnail
 
 from utils import allowed_file
 
@@ -74,6 +75,15 @@ celery = make_celery(app)
 
 
 @celery.task()
+def task_get_lease_thumbnail(lease_id, file_path):
+
+    get_lease_thumbnail = GetLeaseThumbnail(init_infrastucture()["Storage"])
+    get_lease_thumbnail.execute(
+        Request({"lease_id": lease_id, "lease_file_path": file_path})
+    )
+
+
+@celery.task()
 def task_extract_paragraphs(lease_id, file_path):
     infra = init_infrastucture()
 
@@ -122,6 +132,7 @@ def submit_lease_for_analysis():
         # Celery needs a String instead of an ObjectId
         lease_id = str(response.data["Lease"]["Id"])
         task_extract_paragraphs.delay(lease_id, filepath)
+        task_get_lease_thumbnail.delay(lease_id, filepath)
 
         return Response(
             json.dumps(response.data, default=str), mimetype="application/json"

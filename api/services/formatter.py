@@ -27,7 +27,7 @@ class LeaseFormatterService:
 
         return {
             "Id": lease["_id"],
-            "Thumbnail": lease["ThumbnailString"],
+            "Thumbnail": lease.get("ThumbnailString", ""),
             "Status": lease["Status"],
             "Issues": issues,
             "Dates": " - ".join(dates[:2]) if dates else "",
