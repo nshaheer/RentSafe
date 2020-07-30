@@ -53,3 +53,6 @@ Install using:
 https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04
 
 Update `/etc/hosts` by adding `127.0.0.1 redis` to it.
+
+### Gunicorn and Nginx Setup
+https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-gunicorn-and-nginx-on-ubuntu-18-04
