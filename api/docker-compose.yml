@@ -12,8 +12,8 @@ services:
       context: .
       dockerfile: Dockerfile
     command: >
-      python3 -m flask run
+      python3 -m flask run --host=0.0.0.0
     volumes:
       - .:/code    
     ports:
-      - "5000:5000"
+      - "8001:5000"
