@@ -1,7 +1,8 @@
-from infrastructure.extractor import GVisionDocumentTextExtractor
+from infrastructure.extractor import GoogleVisionExtractor
 
 def main():
-   MyGV = GVisionDocumentTextExtractor()
-   MyGV.extract_pdf_into_paragraphs(1, "/Users/SimarChawla/Downloads/333 Sample Lease.pdf")
+   MyGV = GoogleVisionExtractor()
+   MyGV.extract(1, "/Users/Shaheer/Desktop/25_RENTAL_APPLICATION_group_2018_12.pdf")
    print("Hello")
+   
    

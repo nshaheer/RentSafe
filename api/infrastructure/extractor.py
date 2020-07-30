@@ -7,8 +7,30 @@ from google.protobuf import json_format
 from uuid import uuid4
 from abc import ABCMeta, abstractmethod
 
+import img2pdf 
+from PIL import Image
+
 from .dummy_results import extraction_job_results as dummy_results
 
+def jpeg_to_pdf(jpeg_uri, pdf_uri):
+    # storing image path 
+    img_path = jpeg_uri
+    # storing pdf path 
+    pdf_path = pdf_uri
+    # opening image 
+    image = Image.open(img_path) 
+    # converting into chunks using img2pdf 
+    pdf_bytes = img2pdf.convert(image.filename) 
+    # opening or creating pdf file 
+    file = open(pdf_path, "wb") 
+    # writing pdf files with chunks 
+    file.write(pdf_bytes) 
+    # closing image file 
+    image.close() 
+    # closing pdf file 
+    file.close() 
+    # output 
+    print("Successfully made pdf file")
 
 class ExtractorException(Exception):
     pass
@@ -112,7 +134,7 @@ class GoogleVisionExtractor(ExtractorInteface):
                         paragraph_array.append(para)
         return paragraph_array
 
-    def _upload_PDF_to_bucket(self, lease_id, document_path):
+    def _upload_file_to_bucket(self, lease_id, document_path):
         """Uploads a file to the bucket."""
         source_file_name = document_path
         destination_blob_name = str(lease_id)
@@ -134,9 +156,10 @@ class GoogleVisionExtractor(ExtractorInteface):
         print("File {} uploaded to {}.".format(source_file_name, destination_blob_name))
 
     def extract(self, lease_id, document_path):
-        self._upload_PDF_to_bucket(lease_id, document_path)
+        self._upload_file_to_bucket(lease_id, document_path)
         paragraphs = self._detect_document(
             self.bucket_file_storage_path + str(lease_id),
             self.bucket_paragraph_output_path + str(lease_id),
-        )
+            )
+        
         return paragraphs
