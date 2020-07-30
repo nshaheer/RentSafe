@@ -55,25 +55,43 @@ def handle_exception(e):
 
 bucket = "rent-safe"
 
-storage = MongoStorage()
-extractor = GoogleVisionExtractor()
-recognizer = AWSComprehendEntityRecognizer(bucket)
-classifier = AwsComprehendClassifier(bucket)
+
+def init_infrastucture():
+    storage = MongoStorage()
+    extractor = GoogleVisionExtractor()
+    recognizer = AWSComprehendEntityRecognizer(bucket)
+    classifier = AwsComprehendClassifier(bucket)
+
+    return {
+        "Storage": storage,
+        "Extractor": extractor,
+        "Recognizer": recognizer,
+        "Classifier": classifier,
+    }
+
 
 celery = make_celery(app)
 
 
 @celery.task()
 def task_extract_paragraphs(lease_id, file_path):
-    paragraphs = extractor.extract(lease_id, file_path)
+    infra = init_infrastucture()
 
-    submit = SubmitTextForAnalysis(recognizer, classifier, storage)
+    paragraphs = infra["Extractor"].extract(lease_id, file_path)
+
+    submit = SubmitTextForAnalysis(
+        infra["Recognizer"], infra["Classifier"], infra["Storage"]
+    )
     submit.execute(Request({"lease_id": lease_id, "paragraphs": paragraphs}))
 
 
 @celery.task()
 def task_process_pending_analysis():
-    background = ProcessPendingAnalysis(recognizer, classifier, storage)
+    infra = init_infrastucture()
+
+    background = ProcessPendingAnalysis(
+        infra["Recognizer"], infra["Classifier"], infra["Storage"]
+    )
     background.execute()
 
 
@@ -94,7 +112,9 @@ def submit_lease_for_analysis():
         filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
         lease_doc.save(filepath)
 
-        submit_lease_for_analysis = SubmitLeaseForAnalysis(storage)
+        infra = init_infrastucture()
+
+        submit_lease_for_analysis = SubmitLeaseForAnalysis(infra["Storage"])
         response = submit_lease_for_analysis.execute(
             Request({"lease_file_path": filepath})
         )
@@ -112,7 +132,11 @@ def submit_lease_for_analysis():
 
 @app.route("/leases/<lease_id>", methods=["GET"])
 def get_analysis_results(lease_id):
-    get_analysis = GetAnalysis(storage, classifier, recognizer)
+    infra = init_infrastucture()
+
+    get_analysis = GetAnalysis(
+        infra["Storage"], infra["Classifier"], infra["Recognizer"]
+    )
     response = get_analysis.execute(Request({"lease_id": lease_id}))
 
     return Response(json.dumps(response.data, default=str), mimetype="application/json")
