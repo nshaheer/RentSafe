@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  api:
+    container_name: api
+    environment:
+      - DEBUG=1
+      - DOCKER_CONTAINER=1
+      - FLASK_APP=dummy_rest.py
+      - FLASK_ENV=development
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      python3 -m flask run
+    volumes:
+      - .:/code    
+    ports:
+      - "8000:8000"

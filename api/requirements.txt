@@ -6,3 +6,4 @@ boto3==1.14.2
 requests
 s3urls==0.0.3
 Flask==1.1.2
+preview-generator==0.14
