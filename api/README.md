@@ -35,7 +35,7 @@ Process Entity Recognition results in the context of a lease.
 Process Classification results in the context of a lease.
 
 ## Local Development
-`cd api && export FLASK_APP=rest.py && export FLASK_ENV=development && python3 -m flask run`
+`cd api && export FLASK_APP=app.py && export FLASK_ENV=development && python3 -m flask run`
 
 To run a faster API that returns mock data for local testing, `cd api && export FLASK_APP=dummy_rest.py && export FLASK_ENV=development && python3 -m flask run`
 
@@ -43,3 +43,13 @@ A Postman export is available in `docs/` to visualize the exact requests and res
 
 ## Background Tasks
 `celery worker -A app.celery --beat -l INFO`
+
+## Server Access
+`ssh -i .aws/RentSafe.pem ubuntu@ec2-15-223-126-32.ca-central-1.compute.amazonaws.com`
+
+### Redis Setup
+Install using:
+
+https://www.digitalocean.com/community/tutorials/how-to-install-and-secure-redis-on-ubuntu-18-04
+
+Update `/etc/hosts` by adding `127.0.0.1 redis` to it.
