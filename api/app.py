@@ -4,8 +4,9 @@ import os
 import json
 
 from celery.schedules import crontab
-from flask import Flask, request, Response, redirect, url_for
+from flask import Flask, request, Response, redirect, url_for, json
 from werkzeug.utils import secure_filename
+from werkzeug.exceptions import HTTPException
 
 from infrastructure.classifier import AwsComprehendClassifier
 from infrastructure.storage import MongoStorage
@@ -37,6 +38,20 @@ app.config.update(
         }
     },
 )
+
+
+@app.errorhandler(HTTPException)
+def handle_exception(e):
+    """Return JSON instead of HTML for HTTP errors."""
+    # start with the correct headers and status code from the error
+    response = e.get_response()
+    # replace the body with JSON
+    response.data = json.dumps(
+        {"code": e.code, "name": e.name, "description": e.description,}
+    )
+    response.content_type = "application/json"
+    return response
+
 
 bucket = "rent-safe"
 
