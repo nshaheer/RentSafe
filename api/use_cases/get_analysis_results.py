@@ -7,6 +7,7 @@ from infrastructure.entity_recognizer import (
     RecognizerResultsNotAvailable,
 )
 from services.analysis import AnalysisService
+from services.formatter import LeaseFormatterService
 
 
 class GetAnalysis:
@@ -28,8 +29,10 @@ class GetAnalysis:
 
         if lease["status"] == "PENDING":
             try:
-                c_results = self.classifier.get_results(lease["classification_job_id"])
-                r_results = self.entity_recog.get_results(lease["recog_job_id"])
+                c_results = self.classifier.get_results(lease["ClassificationJobId"])
+                r_results = self.entity_recog.get_results(
+                    lease["EntityRecognitionJobId"]
+                )
 
                 c_analysis = AnalysisService.analyze_classification_results(c_results)
                 r_analysis = AnalysisService.analyze_recognition_results(r_results)
@@ -37,11 +40,12 @@ class GetAnalysis:
                 lease_update = {}
                 lease_update.update(c_analysis)
                 lease_update.update(r_analysis)
-                lease_update.update({"status": "COMPLETED"})
+                lease_update.update({"Status": "COMPLETED"})
 
                 lease = self.storage.update_lease(lease_id, lease_update)
 
             except (ClassifierResultsNotAvailable, RecognizerResultsNotAvailable) as _:
                 return Response({"lease": lease})
 
-        return Response({"lease": lease})
+        formatted_lease = LeaseFormatterService.format_lease_for_android(lease)
+        return Response({"lease": formatted})

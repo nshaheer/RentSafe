@@ -6,7 +6,7 @@ services:
     environment:
       - DEBUG=1
       - DOCKER_CONTAINER=1
-      - FLASK_APP=dummy_rest.py
+      - FLASK_APP=rest.py
       - FLASK_ENV=development
     build: 
       context: .
@@ -16,4 +16,4 @@ services:
     volumes:
       - .:/code    
     ports:
-      - "8000:8000"
+      - "5000:5000"
