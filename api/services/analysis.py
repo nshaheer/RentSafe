@@ -18,8 +18,8 @@ class AnalysisService:
                 guests_prohibited = True
 
         return {
-            "pets_prohibited": pets_prohibited,
-            "guests_prohibited": guests_prohibited,
+            "ArePetsProhibited": pets_prohibited,
+            "AreGuestsProhibited": guests_prohibited,
         }
 
     @staticmethod
@@ -41,9 +41,9 @@ class AnalysisService:
         people = [r["Text"] for r in all_results if r["Type"] == "PERSON"]
 
         return {
-            "dates": dates,
-            "amounts": amounts,
-            "locations": locations,
-            "organizations": organizations,
-            "people": people,
+            "Dates": dates,
+            "Amounts": amounts,
+            "Locations": locations,
+            "Organizations": organizations,
+            "People": people,
         }

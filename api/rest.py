@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 from infrastructure.classifier import AwsComprehendClassifier
 from infrastructure.storage import MongoStorage
 from infrastructure.entity_recognizer import AWSComprehendEntityRecognizer
-from infrastructure.extractor import DummyExtractor
+from infrastructure.extractor import GoogleVisionExtractor
 
 from request import Request
 
@@ -47,10 +47,14 @@ def submit_for_analysis():
         filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
         lease_doc.save(filepath)
 
-        extractor = DummyExtractor()
+        bucket = "rent-safe"
+        recognizer = AWSComprehendEntityRecognizer(bucket)
+        classifier = AwsComprehendClassifier(bucket)
+
+        extractor = GoogleVisionExtractor()
         storage = MongoStorage()
 
-        submit = SubmitForAnalysis(extractor, storage)
+        submit = SubmitForAnalysis(extractor, recognizer, classifier, storage)
 
         response = submit.execute(Request({"lease_file_path": filepath}))
 

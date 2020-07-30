@@ -6,14 +6,14 @@ services:
     environment:
       - DEBUG=1
       - DOCKER_CONTAINER=1
-      - FLASK_APP=dummy_rest.py
+      - FLASK_APP=rest.py
       - FLASK_ENV=development
     build: 
       context: .
       dockerfile: Dockerfile
     command: >
-      python3 -m flask run
+      python3 -m flask run --host=0.0.0.0
     volumes:
       - .:/code    
     ports:
-      - "8000:8000"
+      - "8001:5000"
