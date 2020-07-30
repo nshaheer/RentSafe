@@ -6,31 +6,32 @@ services:
     environment:
       - DEBUG=1
       - DOCKER_CONTAINER=1
-      - FLASK_APP=rest.py
+      - FLASK_APP=app.py
       - FLASK_ENV=development
     build: 
       context: .
       dockerfile: Dockerfile
     command: >
-      python3 -m flask run --host=0.0.0.0
+      bash -c "python3 -m flask run --host=0.0.0.0"
     volumes:
       - .:/code    
     ports:
       - "5000:5000"
     depends_on:
       - redis
-      - celery
+      # - celery
   redis:
     image: "redis:4-alpine3.10"
     container_name: redis
     ports:
       - 6739:6739
-  celery:
-    environment:
-      - DOCKER_CONTAINER=2
-    build:
-      context: .
-      dockerfile: Dockerfile.celery
-    command: celery -A rest.celery worker -l info
-    volumes:
-      - .:/code
+  # celery:
+  #   environment:
+  #     - DEBUG=1
+  #     - DOCKER_CONTAINER=2
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.celery
+  #   command: celery -A app.celery worker -l info
+  #   volumes:
+  #     - .:/code

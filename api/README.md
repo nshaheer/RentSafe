@@ -40,3 +40,6 @@ Process Classification results in the context of a lease.
 To run a faster API that returns mock data for local testing, `cd api && export FLASK_APP=dummy_rest.py && export FLASK_ENV=development && python3 -m flask run`
 
 A Postman export is available in `docs/` to visualize the exact requests and responses.
+
+## Background Tasks
+`celery worker -A app.celery -l INFO`

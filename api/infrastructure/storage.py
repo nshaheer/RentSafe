@@ -29,15 +29,7 @@ class StorageInterface(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def add_job(self, lease_id, job_type, job_id):
-        pass
-
-    @abstractmethod
-    def get_pending_jobs(self):
-        pass
-
-    @abstractmethod
-    def mark_job_completed(self, job_id):
+    def get_pending_analysis(self):
         pass
 
 
@@ -63,21 +55,8 @@ class MemStorage(StorageInterface):
         self.leases[lease_id] = lease
         return lease
 
-    def add_job(self, lease_id, job_type, job_id):
-        _id = str(uuid4())
-
-        self.jobs[_id] = {
-            "lease_id": lease_id,
-            "job_type": job_type,
-            "job_id": job_id,
-            "status": "PENDING",
-        }
-
-    def get_pending_jobs(self):
-        return [j for j in self.jobs.values() if j["status"] == "PENDING"]
-
-    def mark_job_completed(self, job_id):
-        self.jobs[job_id]["status"] = "COMPLETED"
+    def get_pending_analysis(self):
+        return [a for a in self.leases.values() if a["Status"] == "PENDING_ANALYSIS"]
 
 
 class MongoStorage(StorageInterface):
@@ -105,20 +84,5 @@ class MongoStorage(StorageInterface):
 
         return self.leases.find_one({"_id": ObjectId(lease_id)})
 
-    def add_job(self, lease_id, job_type, job_id):
-        return self.jobs.insert_one(
-            {
-                "lease_id": lease_id,
-                "job_type": job_type,
-                "job_id": job_id,
-                "status": "PENDING",
-            }
-        )
-
-    def get_pending_jobs(self):
-        return self.jobs.find({"status": "PENDING"})
-
-    def mark_job_completed(self, job_id):
-        return self.jobs.update_one(
-            {"job_id": job_id}, {"$set": {"status": "COMPLETE"}}
-        )
+    def get_pending_analysis(self):
+        return self.leases.find({"Status": "PENDING_ANALYSIS"})
