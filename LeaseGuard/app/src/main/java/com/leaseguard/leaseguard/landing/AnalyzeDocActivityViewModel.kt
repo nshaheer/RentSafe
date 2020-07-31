@@ -13,15 +13,11 @@ import com.leaseguard.leaseguard.models.ApiResponse
 import com.leaseguard.leaseguard.models.LeaseDocument
 import com.leaseguard.leaseguard.models.RentIssue
 import com.leaseguard.leaseguard.repositories.DocumentRepository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okio.ByteString.Companion.decodeBase64
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Exception
 
 
 import javax.inject.Inject
