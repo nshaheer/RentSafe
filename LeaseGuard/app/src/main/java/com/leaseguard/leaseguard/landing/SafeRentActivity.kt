@@ -1,6 +1,8 @@
 package com.leaseguard.leaseguard.landing
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.leaseguard.leaseguard.BaseActivity
 import com.leaseguard.leaseguard.R
+import com.leaseguard.leaseguard.api.SyncService
 import com.leaseguard.leaseguard.models.LeaseDocument
 import kotlinx.android.synthetic.main.activity_saferent.*
 import kotlinx.android.synthetic.main.card_document.view.*
@@ -111,10 +114,17 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         recyclerDocumentList.setHasFixedSize(true)
         recyclerDocumentList.layoutManager = viewManager
         recyclerDocumentList.adapter = viewAdapter
+
+        startService(Intent(getApplicationContext(), SyncService::class.java))
     }
 
     override fun onResume() {
         super.onResume()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(Intent(getApplicationContext(), SyncService::class.java))
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -141,12 +151,14 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
                 view.card_address.text = leaseDocument.address
                 view.card_rent.text = "$" + leaseDocument.rent.toString() + "/mo"
                 view.card_date.text = leaseDocument.date
+                var thumbnail = BitmapFactory.decodeByteArray(leaseDocument.thumbnail, 0, leaseDocument.thumbnail.size);
+                view.card_image.setImageBitmap(thumbnail)
                 val issueString : String = view.context.getString(R.string.issues_found)
-                if (leaseDocument.issues == 0) {
+                if (leaseDocument.numIssues == 0) {
                     view.card_issues.text = "no " + issueString
                     view.card_issues.backgroundTintList = ContextCompat.getColorStateList(view.context, R.color.darkgreen)
                 } else {
-                    view.card_issues.text =  leaseDocument.issues.toString() + " " + issueString
+                    view.card_issues.text =  leaseDocument.numIssues.toString() + " " + issueString
                     view.card_issues.backgroundTintList = ContextCompat.getColorStateList(view.context, R.color.watchoutred)
                 }
             }

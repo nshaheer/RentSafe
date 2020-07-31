@@ -15,4 +15,12 @@ class DocumentRepository @Inject constructor(private val leaseDao: LeaseDao) {
     suspend fun addDocument(leaseDocument: LeaseDocument) {
         leaseDao.insert(leaseDocument)
     }
+
+    suspend fun deleteDocument(leaseDocument: LeaseDocument) {
+        leaseDao.delete(leaseDocument)
+    }
+
+    suspend fun deleteAll() {
+        leaseDao.deleteAll()
+    }
 }
