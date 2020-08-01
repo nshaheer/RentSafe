@@ -26,8 +26,11 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
             )
     )
 
-    // show loading dialog when set to true
-    var isLoading: MutableLiveData<Boolean> = MutableLiveData()
+    var notifyAnalysisComplete = MutableLiveData<Int>()
+    var analysisIsReady = MutableLiveData<Boolean>()
+
+    // show uploading dialog when set to true
+    var isUploading: MutableLiveData<Boolean> = MutableLiveData()
     // end activity when notified
     var endActivity: MutableLiveData<Int> = MutableLiveData()
     // determines whether or not the lease looks safe
@@ -39,15 +42,21 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
     // if invalid document is provided, show error then exit
     var showErrorDialog: MutableLiveData<Int> = MutableLiveData()
 
+    // TODO: If analysis is not yet ready, should show analyzing... screen
     fun useDocument(key: Int) {
         // Subtract 1 because auto-increment primary key starts at 1
         val document = documentRepository.getDocuments().value?.get(key - 1)
         document?.let {
-            isLoading.postValue(false)
+            isUploading.postValue(false)
+            analysisIsReady.postValue(true)
             leaseDetails.postValue(it)
         }?: run {
             showErrorDialog.postValue(0)
         }
+    }
+
+    fun surveyFinished(surveyResult: MutableList<Boolean?>) {
+        // TODO: send the survey result using API
     }
 
     /**
@@ -57,16 +66,16 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
         documentRepository.addDocument(leaseDocument)
     }
 
-    fun doAnalysis() {
-        isLoading.postValue(true)
-        // TODO: Make an API call
+    /**
+     * Upload the lease for analysis.
+     */
+    fun uploadLease() {
+        isUploading.postValue(true)
+        // TODO: Make an API call for uploading lease
         val thread = Thread(Runnable {
             Thread.sleep(5000)
-            isLoading.postValue(false)
-            showSafeRent.postValue(rentIsSafe)
-            rentIssues.postValue(dummyIssues)
-            leaseDetails.postValue(dummyDocument)
-            insertDocument(dummyDocument)
+            isUploading.postValue(false)
+            analysisIsReady.postValue(false)    // analysis is not ready immediately
         })
         thread.start()
     }
@@ -74,4 +83,12 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
     fun cancelAnalysis() {
         endActivity.postValue(0)
     }
+
+    /**
+     *
+    showSafeRent.postValue(rentIsSafe)
+    rentIssues.postValue(dummyIssues)
+    leaseDetails.postValue(dummyDocument)
+    insertDocument(dummyDocument)
+     */
 }
