@@ -3,7 +3,6 @@
 import os
 import json
 
-from celery.schedules import crontab
 from flask import Flask, request, Response, redirect, url_for, json
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import HTTPException
@@ -25,20 +24,10 @@ from utils import allowed_file
 
 from celery_app import make_celery
 
+from config import Config
 
 app = Flask(__name__)
-app.config.update(
-    UPLOAD_FOLDER="/tmp",
-    CELERY_BROKER_URL="redis://redis:6379",
-    CELERY_RESULT_BACKEND="redis://redis:6379",
-    CELERYBEAT_SCHEDULE={
-        "process-pending-analysis": {
-            "task": "app.task_process_pending_analysis",
-            # Every minute
-            "schedule": crontab(minute="*"),
-        }
-    },
-)
+app.config.from_object(Config())
 
 
 @app.errorhandler(HTTPException)
