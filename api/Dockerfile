@@ -7,6 +7,8 @@ ENV PYTHONUNBUFFERED 1
 
 # code setup and package installation
 RUN mkdir /code
+RUN mkdir /tmp/lease-docs
+
 WORKDIR /code
 COPY . /code/
 ENV CONFIG_PATH /code/config_dev

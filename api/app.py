@@ -3,6 +3,7 @@
 import os
 import json
 
+from celery.schedules import crontab
 from flask import Flask, request, Response, redirect, url_for, json
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import HTTPException
@@ -10,7 +11,7 @@ from werkzeug.exceptions import HTTPException
 from infrastructure.classifier import AwsComprehendClassifier
 from infrastructure.storage import MongoStorage
 from infrastructure.entity_recognizer import AWSComprehendEntityRecognizer
-from infrastructure.extractor import GoogleVisionExtractor
+from infrastructure.extractor import GoogleVisionExtractor, ExtractorException
 
 from request import Request
 
@@ -28,6 +29,15 @@ from config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config())
+app.config.update(
+    CELERYBEAT_SCHEDULE={
+        "process-pending-analysis": {
+            "task": "app.task_process_pending_analysis",
+            # Every minute
+            "schedule": crontab(minute="*"),
+        }
+    },
+)
 
 
 @app.errorhandler(HTTPException)
@@ -76,12 +86,15 @@ def task_get_lease_thumbnail(lease_id, file_path):
 def task_extract_paragraphs(lease_id, file_path):
     infra = init_infrastucture()
 
-    paragraphs = infra["Extractor"].extract(lease_id, file_path)
-
-    submit = SubmitTextForAnalysis(
-        infra["Recognizer"], infra["Classifier"], infra["Storage"]
-    )
-    submit.execute(Request({"lease_id": lease_id, "paragraphs": paragraphs}))
+    try:
+        paragraphs = infra["Extractor"].extract(lease_id, file_path)
+        submit = SubmitTextForAnalysis(
+            infra["Recognizer"], infra["Classifier"], infra["Storage"]
+        )
+        submit.execute(Request({"lease_id": lease_id, "paragraphs": paragraphs}))
+    except ExtractorException as e:
+        print(e)
+        # Set Status for Lease to FAILED
 
 
 @celery.task()
@@ -108,7 +121,7 @@ def submit_lease_for_analysis():
 
     if lease_doc and allowed_file(lease_doc.filename):
         filename = secure_filename(lease_doc.filename)
-        filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        filepath = os.path.join(app.config["LEASE_DOCS_FOLDER"], filename)
         lease_doc.save(filepath)
 
         infra = init_infrastucture()
