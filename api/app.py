@@ -166,4 +166,6 @@ def get_analysis_results(lease_id):
 def collect_questionnaire_answers():
     infra = init_infrastucture()
 
+    infra["Storage"].add_questionnaire_submission(request.json)
+
     return {"status": "SUCCESS"}
