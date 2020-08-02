@@ -143,6 +143,13 @@ def submit_lease_for_analysis():
     return {"status": "failed", "message": "invalid file"}
 
 
+@app.route("/leases/<lease_id>/email", methods=["POST"])
+def email_lease_analysis(lease_id):
+    infra = init_infrastucture()
+
+    return {"status": "SUCCESS"}
+
+
 @app.route("/leases/<lease_id>", methods=["GET"])
 def get_analysis_results(lease_id):
     infra = init_infrastucture()
@@ -153,3 +160,10 @@ def get_analysis_results(lease_id):
     response = get_analysis.execute(Request({"lease_id": lease_id}))
 
     return Response(json.dumps(response.data, default=str), mimetype="application/json")
+
+
+@app.route("/questionnaire", methods=["POST"])
+def collect_questionnaire_answers():
+    infra = init_infrastucture()
+
+    return {"status": "SUCCESS"}
