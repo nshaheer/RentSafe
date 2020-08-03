@@ -26,4 +26,5 @@
     <string name="see_ratings_reviews">SEE RATINGS/REVIEWS</string>
     <string name="share_document">Share Document</string>
     <string name="delete_document">Delete Document</string>
+    <string name="action_sign_lease">Save</string>
 </resources>
