@@ -22,6 +22,7 @@ import javax.inject.Inject
 
 class AnalyzeDocActivityViewModel @Inject constructor(private val documentRepository: DocumentRepository) : ViewModel() {
     var analysisIsReady = MutableLiveData<Boolean>()
+    var surveyIsComplete = MutableLiveData<Int>()
 
     // show uploading dialog when set to true
     var isUploading: MutableLiveData<Boolean> = MutableLiveData()
@@ -49,6 +50,8 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
 
     fun surveyFinished(surveyResult: MutableList<Boolean?>) {
         // TODO: send the survey result using API
+
+        surveyIsComplete.postValue(0)
     }
 
     /**

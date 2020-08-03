@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.edit
 import androidx.lifecycle.Observer
 import com.leaseguard.leaseguard.BaseActivity
 import com.leaseguard.leaseguard.R
@@ -26,6 +27,7 @@ import javax.inject.Inject
 
 class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
     private val EMAIL_CODE = 1
+    private val SURVEY_DONE_KEY = "SURVEY_DONE"
 
     @Inject
     lateinit var analyzeDocViewModel: AnalyzeDocActivityViewModel
@@ -77,12 +79,21 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
     }
 
     private fun showAnalyzingView() {
-        setContentView(R.layout.activity_analyzedoc_survey_permission)
-        accept_button.setOnClickListener {
-            showSurveyView()
-        }
-        reject_button.setOnClickListener {
+        analyzeDocViewModel.surveyIsComplete.observe(this, Observer {
+            this.getPreferences(MODE_PRIVATE).edit {
+                this.putBoolean(SURVEY_DONE_KEY, true)
+            }
+        })
+        if (this.getPreferences(MODE_PRIVATE).getBoolean(SURVEY_DONE_KEY, false)) {
             finish()
+        } else {
+            setContentView(R.layout.activity_analyzedoc_survey_permission)
+            accept_button.setOnClickListener {
+                showSurveyView()
+            }
+            reject_button.setOnClickListener {
+                finish()
+            }
         }
     }
 
