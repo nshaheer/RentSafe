@@ -1,5 +1,6 @@
 import os, io
 import re
+from uuid import uuid4
 from google.cloud import vision
 from google.cloud import storage
 from google.protobuf import json_format
@@ -7,6 +8,8 @@ from google.protobuf import json_format
 from uuid import uuid4
 from abc import ABCMeta, abstractmethod
 
+from services.image_conversion import ImageConversionService
+from utils import get_file_type
 from .dummy_results import extraction_job_results as dummy_results
 
 
@@ -15,6 +18,10 @@ class ExtractorException(Exception):
 
 
 class ExtractorResultsNotAvailable(ExtractorException):
+    pass
+
+
+class ExtractorImageConversionFailed(ExtractorException):
     pass
 
 
@@ -112,7 +119,7 @@ class GoogleVisionExtractor(ExtractorInteface):
                         paragraph_array.append(para)
         return paragraph_array
 
-    def _upload_PDF_to_bucket(self, lease_id, document_path):
+    def _upload_file_to_bucket(self, lease_id, document_path):
         """Uploads a file to the bucket."""
         source_file_name = document_path
         destination_blob_name = str(lease_id)
@@ -134,9 +141,19 @@ class GoogleVisionExtractor(ExtractorInteface):
         print("File {} uploaded to {}.".format(source_file_name, destination_blob_name))
 
     def extract(self, lease_id, document_path):
-        self._upload_PDF_to_bucket(lease_id, document_path)
+
+        if get_file_type(document_path) != "pdf":
+            tmp_path = "/tmp/{}.pdf".format(uuid4())
+            try:
+                ImageConversionService().convert(document_path, tmp_path)
+                document_path = tmp_path
+            except Exception as _:
+                raise ExtractorImageConversionFailed()
+
+        self._upload_file_to_bucket(lease_id, document_path)
         paragraphs = self._detect_document(
             self.bucket_file_storage_path + str(lease_id),
             self.bucket_paragraph_output_path + str(lease_id),
         )
+
         return paragraphs

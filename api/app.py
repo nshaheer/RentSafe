@@ -11,7 +11,7 @@ from werkzeug.exceptions import HTTPException
 from infrastructure.classifier import AwsComprehendClassifier
 from infrastructure.storage import MongoStorage
 from infrastructure.entity_recognizer import AWSComprehendEntityRecognizer
-from infrastructure.extractor import GoogleVisionExtractor
+from infrastructure.extractor import GoogleVisionExtractor, ExtractorException
 
 from request import Request
 
@@ -25,12 +25,11 @@ from utils import allowed_file
 
 from celery_app import make_celery
 
+from config import Config
 
 app = Flask(__name__)
+app.config.from_object(Config())
 app.config.update(
-    UPLOAD_FOLDER="/tmp",
-    CELERY_BROKER_URL="redis://redis:6379",
-    CELERY_RESULT_BACKEND="redis://redis:6379",
     CELERYBEAT_SCHEDULE={
         "process-pending-analysis": {
             "task": "app.task_process_pending_analysis",
@@ -87,12 +86,15 @@ def task_get_lease_thumbnail(lease_id, file_path):
 def task_extract_paragraphs(lease_id, file_path):
     infra = init_infrastucture()
 
-    paragraphs = infra["Extractor"].extract(lease_id, file_path)
-
-    submit = SubmitTextForAnalysis(
-        infra["Recognizer"], infra["Classifier"], infra["Storage"]
-    )
-    submit.execute(Request({"lease_id": lease_id, "paragraphs": paragraphs}))
+    try:
+        paragraphs = infra["Extractor"].extract(lease_id, file_path)
+        submit = SubmitTextForAnalysis(
+            infra["Recognizer"], infra["Classifier"], infra["Storage"]
+        )
+        submit.execute(Request({"lease_id": lease_id, "paragraphs": paragraphs}))
+    except ExtractorException as e:
+        print(e)
+        # Set Status for Lease to FAILED
 
 
 @celery.task()
@@ -119,7 +121,7 @@ def submit_lease_for_analysis():
 
     if lease_doc and allowed_file(lease_doc.filename):
         filename = secure_filename(lease_doc.filename)
-        filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+        filepath = os.path.join(app.config["LEASE_DOCS_FOLDER"], filename)
         lease_doc.save(filepath)
 
         infra = init_infrastucture()
@@ -141,6 +143,13 @@ def submit_lease_for_analysis():
     return {"status": "failed", "message": "invalid file"}
 
 
+@app.route("/leases/<lease_id>/email", methods=["POST"])
+def email_lease_analysis(lease_id):
+    infra = init_infrastucture()
+
+    return {"status": "SUCCESS"}
+
+
 @app.route("/leases/<lease_id>", methods=["GET"])
 def get_analysis_results(lease_id):
     infra = init_infrastucture()
@@ -151,3 +160,12 @@ def get_analysis_results(lease_id):
     response = get_analysis.execute(Request({"lease_id": lease_id}))
 
     return Response(json.dumps(response.data, default=str), mimetype="application/json")
+
+
+@app.route("/questionnaire", methods=["POST"])
+def collect_questionnaire_answers():
+    infra = init_infrastucture()
+
+    infra["Storage"].add_questionnaire_submission(request.json)
+
+    return {"status": "SUCCESS"}

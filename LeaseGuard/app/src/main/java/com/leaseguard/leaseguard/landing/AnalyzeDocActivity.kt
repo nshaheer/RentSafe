@@ -34,13 +34,14 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
 
     var switchy = true
 
+    @ExperimentalStdlibApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.title = "Analyze Document"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val documentKey: Int = intent.getIntExtra(DOCUMENT_KEY, -1)
-        if (documentKey != -1) {
+        val documentKey: String = intent.getStringExtra(DOCUMENT_KEY)?:""
+        if (!documentKey.isEmpty()) {
             analyzeDocViewModel.useDocument(documentKey)
         } else {
             initUploadingDialogListeners()

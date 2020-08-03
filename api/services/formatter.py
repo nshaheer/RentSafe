@@ -5,18 +5,27 @@ class LeaseFormatterService:
         if lease.get("ArePetsProhibited", False):
             issues.append(
                 {
-                    "Title": "Pet Policies",
-                    "Issue": "Pets prohibited",
-                    "Description": "Landlords are only able to prohibit pets if they case significant property damage",
+                    "Title": "Pet Policy",
+                    "Issue": "Landlord does not allow pets",
+                    "Description": "Landlords are only able to prohibit pets if they cause significant property damage",
                 }
             )
 
         if lease.get("AreGuestsProhibited", False):
             issues.append(
                 {
-                    "Title": "Guest Policies",
-                    "Issue": "Guests prohibited",
-                    "Description": "Landlords are only able to prohibit guests in common areas for specific reasons",
+                    "Title": "Guest Policy",
+                    "Issue": "Landlord does not allow guests to stay overnight",
+                    "Description": "Landlords are not legally allowed to prevent guests from staying overnight",
+                }
+            )
+
+        if lease.get("IsRentHigherThanCurrentAverage", False):
+            issues.append(
+                {
+                    "Title": "Rent Higher Than Average",
+                    "Issue": "Your rent seems higher than average for this property",
+                    "Description": "Your rent for this property seems higher than average based on our historical records",
                 }
             )
 

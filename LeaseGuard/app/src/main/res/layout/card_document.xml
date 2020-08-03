@@ -21,12 +21,11 @@
 
         <ImageView
             android:id="@+id/card_image"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:cropToPadding="false"
-            android:maxWidth="120dp"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:src="@drawable/lease_temp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout

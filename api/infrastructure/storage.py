@@ -32,11 +32,15 @@ class StorageInterface(metaclass=ABCMeta):
     def get_pending_analysis(self):
         pass
 
+    @abstractmethod
+    def add_questionnaire_submission(self, submission):
+        pass
+
 
 class MemStorage(StorageInterface):
     def __init__(self):
         self.leases = {}
-        self.jobs = {}
+        self.questionnaire_submissions = {}
 
     def add_lease(self, lease):
         lease_id = str(uuid4())
@@ -58,6 +62,11 @@ class MemStorage(StorageInterface):
     def get_pending_analysis(self):
         return [a for a in self.leases.values() if a["Status"] == "PENDING_ANALYSIS"]
 
+    def add_questionnaire_submission(self, submission):
+        submission_id = str(uuid4())
+
+        self.questionnaire_submissions[submission_id] = submission
+
 
 class MongoStorage(StorageInterface):
     def __init__(self):
@@ -68,7 +77,7 @@ class MongoStorage(StorageInterface):
             ssl_cert_reqs=CERT_NONE,
         )
         self.leases = conn["rent-safe"]["leases"]
-        self.jobs = conn["rent-safe"]["jobs"]
+        self.questionnaire_submissions = conn["rent-safe"]["questionnaire_submissions"]
 
     def add_lease(self, lease):
         return self.leases.insert_one(lease).inserted_id
@@ -86,3 +95,6 @@ class MongoStorage(StorageInterface):
 
     def get_pending_analysis(self):
         return self.leases.find({"Status": "PENDING_ANALYSIS"})
+
+    def add_questionnaire_submission(self, submission):
+        return self.questionnaire_submissions.insert_one(submission).inserted_id

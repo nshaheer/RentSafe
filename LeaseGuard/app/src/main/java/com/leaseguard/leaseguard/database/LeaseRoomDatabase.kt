@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.leaseguard.leaseguard.models.LeaseDocument
 
 // Annotates class to be a Room Database with a table (entity) of the LeaseDocument class
-@Database(entities = arrayOf(LeaseDocument::class), version = 1, exportSchema = false)
+@Database(entities = arrayOf(LeaseDocument::class), version = 2, exportSchema = false)
 public abstract class LeaseRoomDatabase : RoomDatabase() {
 
    abstract fun leaseDao(): LeaseDao
@@ -28,7 +28,7 @@ public abstract class LeaseRoomDatabase : RoomDatabase() {
                         context.applicationContext,
                         LeaseRoomDatabase::class.java,
                         "lease_database"
-                    ).build()
+                    ).fallbackToDestructiveMigration().build()
                 INSTANCE = instance
                 return instance
             }

@@ -8,11 +8,15 @@ import androidx.room.PrimaryKey
 
 class LeaseDocument(
 
-        @PrimaryKey(autoGenerate = true) val id: Int,
+        @PrimaryKey
+        val id: String,
         val title: String,
         val address: String,
         val rent: Int,
         val date: String,
-        val issues: Int
+        val numIssues: Int,
+        val issueDetails : String,
+        val status: String,
+        val thumbnail : ByteArray
 
         )
