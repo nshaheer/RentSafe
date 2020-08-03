@@ -3,14 +3,16 @@ package com.leaseguard.leaseguard.landing
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
+import androidx.core.view.setMargins
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
 import com.leaseguard.leaseguard.BaseActivity
 import com.leaseguard.leaseguard.R
@@ -42,8 +44,8 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         supportActionBar?.title = "Analyze Document"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val documentKey: String = intent.getStringExtra(DOCUMENT_KEY)?:""
-        if (!documentKey.isEmpty()) {
+        val documentKey: String? = intent.getStringExtra(DOCUMENT_KEY)
+        if (documentKey != null) {
             analyzeDocViewModel.useDocument(documentKey)
         } else {
             initUploadingDialogListeners()
@@ -147,8 +149,8 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
     private fun showAnalysisCompleteView() {
         setContentView(R.layout.activity_analyzedoc)
 
-        analyzeDocViewModel.showSafeRent.observe(this, Observer { showSafeRentPage ->
-            if (showSafeRentPage) {
+        analyzeDocViewModel.rentIssues.observe(this, Observer { rentIssues ->
+            if (rentIssues.size == 0) {
                 headerImage.setImageResource(R.drawable.ic_empty_success)
                 headerText.text = getText(R.string.looksgood)
                 headerText.setTextColor(getColor(R.color.successgreen))
@@ -158,7 +160,7 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
                 headerImage.setImageResource(R.drawable.ic_empty_warning)
                 headerText.text = getText(R.string.watchout)
                 headerText.setTextColor(getColor(R.color.watchoutred))
-                issueText.text = getText(R.string.issues_body)
+                issueText.text = getString(R.string.issues_body, analyzeDocViewModel.rentIssues.value?.size)
                 warningsContainer.visibility = View.VISIBLE
             }
         })
@@ -235,15 +237,29 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
                 return true
             }
             R.id.action_share -> {
-                val intent = Intent(Intent.ACTION_SENDTO)
-                intent.data = Uri.parse("mailto:") // only email apps should handle this
-//                intent.putExtra(Intent.EXTRA_EMAIL, "desmond.lua@luasoftware.com")
-//                intent.putExtra(Intent.EXTRA_SUBJECT,"Feedback")
+                val view = layoutInflater.inflate(R.layout.dialog_share_document, null) as EditText
+                val dialog = AlertDialog.Builder(this)
+                        .setTitle("Email Document")
+                        .setView(view)
+                        .setPositiveButton("SEND") { _, _ ->
+                            // TODO: Make API call to send lease_id, email_address
+                        }
+                        .setNeutralButton("CANCEL", null)
+                        .show()
 
-                startActivityForResult(intent, EMAIL_CODE)
-//                if (intent.resolveActivity(activity.packageManager) != null) {
-//                    startActivity(intent)
-//                }
+                view.requestFocus()
+                view.updateLayoutParams<ViewGroup.MarginLayoutParams> { setMargins(32) }
+                dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+
+                view.setOnEditorActionListener { _, actionId, _ ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        // TODO: Make API call to send lease_id, email_address
+                        dialog.dismiss()
+                        return@setOnEditorActionListener true
+                    }
+                    false
+                }
+
                 return true
             }
             R.id.action_delete -> {

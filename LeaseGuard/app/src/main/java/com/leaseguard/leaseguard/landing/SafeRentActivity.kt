@@ -114,7 +114,7 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         recyclerDocumentList.layoutManager = viewManager
         recyclerDocumentList.adapter = viewAdapter
 
-        startService(Intent(getApplicationContext(), SyncService::class.java))
+        startService(Intent(applicationContext, SyncService::class.java))
     }
 
     override fun onResume() {
@@ -123,7 +123,7 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
 
     override fun onDestroy() {
         super.onDestroy()
-        stopService(Intent(getApplicationContext(), SyncService::class.java))
+        stopService(Intent(applicationContext, SyncService::class.java))
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

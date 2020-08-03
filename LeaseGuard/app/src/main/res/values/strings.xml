@@ -2,7 +2,7 @@
     <string name="app_name">LeaseGuard</string>
     <string name="watchout">Watch Out!</string>
     <string name="looksgood">Looks Good!</string>
-    <string name="issues_body">RentSafe found 2 potential issues with your lease</string>
+    <string name="issues_body">RentSafe found %1$d potential issues with your lease</string>
     <string name="no_issues_body">RentSafe did not find any major issue with your lease</string>
     <string name="lease_details">LEASE DETAILS</string>
     <string name="property_name">Property Name</string>
@@ -26,6 +26,7 @@
     <string name="see_ratings_reviews">SEE RATINGS/REVIEWS</string>
     <string name="share_document">Share Document</string>
     <string name="delete_document">Delete Document</string>
+    <string name="action_sign_lease">Save</string>
     <string name="analyzing">Analyzing...</string>
     <string name="analyzing_body">We’re automatically checking to see if there are any issues with your lease. This may take a few minutes.</string>
     <string name="analyzing_question">In the meantime, could you help us by answering a few questions about your preferences as a tenant?</string>
