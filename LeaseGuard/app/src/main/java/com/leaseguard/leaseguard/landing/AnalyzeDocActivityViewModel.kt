@@ -15,6 +15,8 @@ import com.leaseguard.leaseguard.models.RentIssue
 import com.leaseguard.leaseguard.repositories.DocumentRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -57,6 +59,7 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
         document?.let {
             isLoading.postValue(false)
             leaseDetails.postValue(it)
+            updateRentIssuesWithJsonString(it.issueDetails)
         }?: run {
             showErrorDialog.postValue(0)
         }
@@ -70,6 +73,20 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
         documentRepository.addDocument(leaseDocument)
     }
 
+    /**
+     * Takes a JSON string representing an Array of RentIssues and converts it into a list of RentIssues
+     * and updates the view with our new data
+     */
+    fun updateRentIssuesWithJsonString(str : String) {
+        var newRentIssues : ArrayList<RentIssue> = ArrayList()
+        var jsonArray : JSONArray = JSONArray(str)
+        for (i in 0 until jsonArray.length()) {
+            var jsonObj : JSONObject = jsonArray.getJSONObject(i)
+            newRentIssues.add(RentIssue(jsonObj.getString("Issue"), jsonObj.getString("Title"), jsonObj.getString("Description")))
+        }
+        rentIssues.postValue(newRentIssues)
+    }
+
     @ExperimentalStdlibApi
     fun doAnalysis() {
         isLoading.postValue(true)
@@ -78,7 +95,7 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
             Thread.sleep(5000)
             isLoading.postValue(false)
             showSafeRent.postValue(rentIsSafe)
-            rentIssues.postValue(dummyIssues)
+            //rentIssues.postValue(dummyIssues)
             leaseDetails.postValue(dummyDocument)
             //insertDocument(dummyDocument)
         })
@@ -95,6 +112,7 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
                     Log.d("LEASE-RESPONSE", jsonObject.toString())
                     Log.d("LEASE", response.toString())
                     var thumbnail = jsonObject.get("Thumbnail").asString
+                    // b' has to be removed from the string prior to the encoding
                     thumbnail = thumbnail.substring(2, thumbnail.length - 1)
 
                     var thumbnailByteArray = Base64.decode(thumbnail, Base64.DEFAULT)
@@ -102,6 +120,7 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
                     var document = LeaseDocument(jsonObject.get("Id").asString, jsonObject.get("Title").asString,
                             jsonObject.get("Address").asString, 900, jsonObject.get("Dates").asString,
                             jsonArray.size(), jsonArray.toString(), jsonObject.get("Status").asString, thumbnailByteArray)
+                    updateRentIssuesWithJsonString(jsonArray.toString())
                     insertDocument(document)
                 }
             }

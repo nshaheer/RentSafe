@@ -36,8 +36,8 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         supportActionBar?.title = "Analyze Document"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val documentKey: String = intent.getStringExtra(DOCUMENT_KEY)
-        if (!documentKey.isEmpty()) {
+        val documentKey: String? = intent.getStringExtra(DOCUMENT_KEY)
+        if (documentKey != null) {
             analyzeDocViewModel.useDocument(documentKey)
         } else {
             analyzeDocViewModel.doAnalysis()
@@ -58,8 +58,8 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
             showErrorThenExit()
         })
 
-        analyzeDocViewModel.showSafeRent.observe(this, Observer { showSafeRentPage ->
-            if (showSafeRentPage) {
+        analyzeDocViewModel.rentIssues.observe(this, Observer { rentIssues ->
+            if (rentIssues.size == 0) {
                 headerImage.setImageResource(R.drawable.ic_empty_success)
                 headerText.text = getText(R.string.looksgood)
                 headerText.setTextColor(getColor(R.color.successgreen))
@@ -69,7 +69,7 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
                 headerImage.setImageResource(R.drawable.ic_empty_warning)
                 headerText.text = getText(R.string.watchout)
                 headerText.setTextColor(getColor(R.color.watchoutred))
-                issueText.text = getText(R.string.issues_body)
+                issueText.text = getString(R.string.issues_body, analyzeDocViewModel.rentIssues.value?.size)
                 warningsContainer.visibility = View.VISIBLE
             }
         })

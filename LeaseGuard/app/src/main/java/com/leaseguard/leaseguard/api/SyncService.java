@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -25,11 +26,12 @@ import retrofit2.Response;
 public class SyncService extends Service {
     private Handler handler;
 
-    public static final long DEFAULT_SYNC_INTERVAL = 60 * 1000;
+    public static final long DEFAULT_SYNC_INTERVAL = 10 * 1000;
 
     private Runnable runnableService = new Runnable() {
         @Override
         public void run() {
+            Log.d("POLLING", "STARTED");
             AnalysisService analysisService = AnalysisServiceBuilder.createService(AnalysisService.class);
             Call<ApiResponse> leaseDocs = analysisService.getLease();
             leaseDocs.enqueue(new Callback<ApiResponse>()
@@ -44,12 +46,13 @@ public class SyncService extends Service {
                         LeaseDao leaseDao = LeaseRoomDatabase.Companion.getDatabase(getApplicationContext()).leaseDao();
                         leaseDao.deleteLoadingLease();
                         //leaseDao.insert(apiResponse);
-
+                        Log.d("POLLING", response.body().lease.toString());
                         //API response
                         System.out.println(apiResponse.toString());
                     }
                     else
                     {
+                        Log.d("POLLING", "FAILED");
                         System.out.println("Request Error :: " + response.errorBody());
                     }
                 }
