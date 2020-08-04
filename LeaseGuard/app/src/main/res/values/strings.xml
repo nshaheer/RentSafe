@@ -4,7 +4,7 @@
     <string name="looksgood">Looks Good!</string>
     <string name="issue_body">RentSafe found 1 potential issue with your lease</string>
     <string name="issues_body">RentSafe found %1$d potential issues with your lease</string>
-    <string name="no_issues_body">RentSafe did not find any major issue with your lease</string>
+    <string name="no_issues_body">RentSafe did not find any major issues with your lease</string>
     <string name="lease_details">LEASE DETAILS</string>
     <string name="property_name">Property Name</string>
     <string name="address">Address</string>

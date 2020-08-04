@@ -1,37 +1,37 @@
 ISSUES = {
     "Pets": {
-        "Title": "Pet Policy",
         "Issue": "Landlord does not allow pets",
+        "Title": "Pet Policy",
         "Description": "Landlords are only able to prohibit pets if they cause significant property damage",
         "IsWarning": False,
     },
     "Guests": {
-        "Title": "Guest Policy",
         "Issue": "Landlord does not allow guests to stay overnight",
+        "Title": "Guest Policy",
         "Description": "Landlords are not legally allowed to prevent guests from staying overnight",
         "IsWarning": False,
     },
     "SecurityDeposit": {
-        "Title": "Security Deposit Requried",
         "Issue": "A security deposit is required",
+        "Title": "Security Deposit Requried",
         "Description": "A landlord cannot ask a tenant for a Security Deposit",
         "IsWarning": False,
     },
     "AverageRent": {
-        "Title": "Rent Higher Than Average",
         "Issue": "Your rent seems higher than average for this property",
+        "Title": "Rent Higher Than Average",
         "Description": "Your rent for this property seems higher than average based on our historical records",
         "IsWarning": True,
     },
     "RentDeposit": {
-        "Issue": "A rent deposit is req*uired",
+        "Issue": "A rent deposit is required",
         "Title": "Rent Deposit Required",
         "Description": "While a landlord has the right to ask for a rent deposit, it cannot be for more than one month's worth of rent",
         "IsWarning": True,
     },
     "KeyDeposit": {
-        "Title": "Key Deposit Required",
         "Issue": "A key deposit is required",
+        "Title": "Key Deposit Required",
         "Description": "While a landlord has the right to ask for a key deposit, it must be refundable (i.e. returned to you at the end of the lease period)",
         "IsWarning": True,
     },

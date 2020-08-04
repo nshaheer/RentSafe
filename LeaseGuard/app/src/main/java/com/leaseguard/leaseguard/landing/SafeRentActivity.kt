@@ -203,7 +203,7 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
                 val issuesString : String = view.context.getString(R.string.issues_found)
                 val numIssues : Int = leaseDocument.numIssues
                 if (numIssues == 0) {
-                    view.card_issues.text = "no " + issuesString
+                    view.card_issues.text = "No " + issuesString
                     view.card_issues.backgroundTintList = ContextCompat.getColorStateList(view.context, R.color.darkgreen)
                 } else {
                     view.card_issues.text = if (numIssues == 1) numIssues.toString() + " " + issueString else numIssues.toString() + " " + issuesString

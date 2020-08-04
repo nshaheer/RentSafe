@@ -201,13 +201,14 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         } else {
             rentAmountField.text = String.format(getText(R.string.rent_amount_per_month).toString(), leaseDetail.rent.toFloat())
         }
+
         rentDurationField.text = leaseDetail.date
-        keyDepositField.text = "$50" // placeholder
-        petsAllowedField.text = "NO" //if (analyzeDocViewModel.showSafeRent.value!!) "YES" else "NO" // placeholder
+        keyDepositField.text = "$50" // placeholder TODO: update ML analyzer to get actual key deposit value
+        petsAllowedField.text = "NO" // placeholder TODO: Update to use dynamic API value
         // Property Info Section
-        propertyNameField.text = leaseDetail.title
+        propertyNameField.text = "King Street Towers" // placeholder TODO: update ML analyzer to get actual property name
         addressField.text = leaseDetail.address
-        landlordField.text = "Sage Corporation"
+        landlordField.text = leaseDetail.title
     }
 
     private fun populateRentIssues(rentIssues: List<RentIssue>) {
@@ -274,7 +275,7 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
                 return true
             }
             R.id.action_delete -> {
-                // TODO:
+                // TODO: Implement delete individual lease documents
                 return true
             }
             else -> super.onOptionsItemSelected(item)

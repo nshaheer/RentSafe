@@ -9,7 +9,7 @@ class LeaseDocument(
 
         @PrimaryKey
         val id: String,
-        val title: String,
+        val title: String, // Landlord / Property Management name
         val address: String,
         val rent: Int,
         val date: String,
