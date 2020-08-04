@@ -90,7 +90,7 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
      * Launching a new coroutine to insert the data in a non-blocking way
      */
     fun insertDocument(leaseDocument: LeaseDocument) = viewModelScope.launch(Dispatchers.IO) {
-        documentRepository.deleteAll()
+//        documentRepository.deleteAll() // Uncomment this to delete all stored documents
         documentRepository.addDocument(leaseDocument)
     }
 
@@ -114,15 +114,13 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
     @ExperimentalStdlibApi
     fun uploadLease() {
         isUploading.postValue(true)
-        // TODO: Make an API call for uploading lease
         val thread = Thread(Runnable {
             Thread.sleep(5000)
             isUploading.postValue(false)
-            analysisIsReady.postValue(false)    // analysis is not ready immediately
+            analysisIsReady.postValue(false) // analysis is not ready immediately
         })
         thread.start()
         val analysisService = AnalysisServiceBuilder.createService(AnalysisService::class.java)
-        //val leaseDocs = analysisService.sendPdf()
         var path = documentRepository.getPdfUri()?.path?.split(":")
         Log.d("URI", documentRepository.getPdfUri()?.path)
         var pathStr = path?.get(path.size - 1)
@@ -159,8 +157,6 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
                 }
             })
         }
-
-
     }
 
     fun cancelAnalysis() {
