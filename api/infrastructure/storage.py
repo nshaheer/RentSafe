@@ -17,7 +17,7 @@ class UpdateFailedException(StorageException):
 
 class StorageInterface(metaclass=ABCMeta):
     @abstractmethod
-    def add_lease(self, paragraphs, **kwargs):
+    def add_lease(self, lease):
         pass
 
     @abstractmethod
