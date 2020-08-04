@@ -13,14 +13,14 @@ interface LeaseDao {
     @Query("SELECT * from lease_table WHERE status!='COMPLETED' ORDER BY id ASC")
     fun getLoadingLeases(): LiveData<List<LeaseDocument>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(leaseDocument: LeaseDocument)
 
     @Delete
     suspend fun delete(leaseDocument: LeaseDocument)
 
-   @Update
-    suspend fun update(leaseDocument: LeaseDocument)
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+   fun update(leaseDocument: LeaseDocument)
 
     @Query("DELETE from lease_table WHERE status!='COMPLETED'")
     fun deleteLoadingLease()

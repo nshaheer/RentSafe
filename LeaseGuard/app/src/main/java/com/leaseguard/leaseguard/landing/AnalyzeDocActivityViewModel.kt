@@ -14,12 +14,15 @@ import com.leaseguard.leaseguard.models.RentIssue
 import com.leaseguard.leaseguard.repositories.DocumentRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import java.io.File
 import javax.inject.Inject
 
 class AnalyzeDocActivityViewModel @Inject constructor(private val documentRepository: DocumentRepository) : ViewModel() {
@@ -100,7 +103,7 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
         var jsonArray : JSONArray = JSONArray(str)
         for (i in 0 until jsonArray.length()) {
             var jsonObj : JSONObject = jsonArray.getJSONObject(i)
-            newRentIssues.add(RentIssue(jsonObj.getString("Issue"), jsonObj.getString("Title"), jsonObj.getString("Description")))
+            newRentIssues.add(RentIssue(jsonObj.getString("Issue"), jsonObj.getString("Title"), jsonObj.getString("Description"), jsonObj.getBoolean("IsWarning")))
         }
         rentIssues.postValue(newRentIssues)
     }
@@ -120,33 +123,43 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
         thread.start()
         val analysisService = AnalysisServiceBuilder.createService(AnalysisService::class.java)
         //val leaseDocs = analysisService.sendPdf()
-
-        analysisService.getLease().enqueue(object: Callback<ApiResponse> {
-            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
-                if (response.isSuccessful) {
-                    // When data is available, populate LiveData
-                    var jsonObject : JsonObject = response.body()?.lease ?: JsonObject()
-                    jsonObject.get("Id")
-                    Log.d("LEASE-RESPONSE", jsonObject.toString())
-                    Log.d("LEASE", response.toString())
-                    var thumbnail = jsonObject.get("Thumbnail").asString
-                    // b' has to be removed from the string prior to the encoding
-                    thumbnail = thumbnail.substring(2, thumbnail.length - 1)
-
-                    var thumbnailByteArray = Base64.decode(thumbnail, Base64.DEFAULT)
-                    var jsonArray = jsonObject.getAsJsonArray("Issues")
-                    var document = LeaseDocument(jsonObject.get("Id").asString, jsonObject.get("Title").asString,
-                            jsonObject.get("Address").asString, 900, jsonObject.get("Dates").asString,
-                            jsonArray.size(), jsonArray.toString(), jsonObject.get("Status").asString, thumbnailByteArray)
-                    updateRentIssuesWithJsonString(jsonArray.toString())
-                    insertDocument(document)
+        var path = documentRepository.getPdfUri()?.path?.split(":")
+        var pathStr = path?.get(path.size - 1)
+        var file = File(pathStr)
+        var pdf : RequestBody? = RequestBody.create("*/*".toMediaTypeOrNull(), file)
+        val fileToUpload = pdf?.let { MultipartBody.Part.createFormData("file", file.name, it) }
+        if (fileToUpload != null) {
+            Log.d("PDF", file.name + " :: " + fileToUpload.toString())
+            analysisService.sendPdf(fileToUpload).enqueue(object: Callback<ApiResponse> {
+                override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
+                    if (response.isSuccessful) {
+                        // When data is available, populate LiveData
+                        var jsonObject : JsonObject = response.body()?.lease ?: JsonObject()
+                        Log.d("LEASE-RESPONSE", jsonObject.toString())
+                        Log.d("LEASE", response.toString())
+                        var thumbnail = jsonObject.get("Thumbnail").asString
+                        if (thumbnail.length > 2) {
+                            // b' has to be removed from the string prior to the encoding
+                            thumbnail = thumbnail.substring(2, thumbnail.length - 1)
+                        }
+                        var thumbnailByteArray = Base64.decode(thumbnail, Base64.DEFAULT)
+                        var jsonArray = jsonObject.getAsJsonArray("Issues")
+                        var document = LeaseDocument(jsonObject.get("Id").asString, jsonObject.get("Title").asString,
+                                jsonObject.get("Address").asString, jsonObject.get("Rent").asInt, jsonObject.get("Dates").asString,
+                                jsonArray.size(), jsonArray.toString(), jsonObject.get("Status").asString, thumbnailByteArray, jsonObject.get("DocumentName").asString)
+                        updateRentIssuesWithJsonString(jsonArray.toString())
+                        insertDocument(document)
+                        leaseDetails.postValue(document)
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                t.printStackTrace()
-            }
-        })
+                override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                    t.printStackTrace()
+                }
+            })
+        }
+
+
     }
 
     fun cancelAnalysis() {

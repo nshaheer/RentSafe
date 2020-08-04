@@ -14,6 +14,7 @@ class SafeRentActivityViewModel @Inject constructor(private val documentReposito
     fun onFileSelected(file : Uri?) {
         // TODO: save file to data layer (injected repository)
         // start analyze activity
+        documentRepository.setPdfUri(file)
         startAnalyzeDocActivity.postValue(0)
     }
 }
