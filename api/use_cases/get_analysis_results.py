@@ -11,15 +11,8 @@ from services.formatter import LeaseFormatterService
 
 
 class GetAnalysis:
-    def __init__(
-        self,
-        storage: StorageInterface,
-        classifier: ClassifierInterface,
-        entity_recog: EntityRecogInterface,
-    ):
+    def __init__(self, storage: StorageInterface):
         self.storage = storage
-        self.classifier = classifier
-        self.entity_recog = entity_recog
 
     def execute(self, request: Request) -> Response:
 
