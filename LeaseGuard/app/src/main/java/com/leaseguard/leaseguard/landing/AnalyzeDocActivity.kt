@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.leaseguard.leaseguard.BaseActivity
 import com.leaseguard.leaseguard.R
@@ -103,7 +104,11 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
 
     private fun populateLeaseDetails(leaseDetail: LeaseDocument) {
         // Lease Details Section
-        rentAmountField.text = String.format(getText(R.string.rent_amount_per_month).toString(), leaseDetail.rent.toFloat())
+        if (leaseDetail.rent == 0) {
+            rentAmountField.text = getText(R.string.not_available)
+        } else {
+            rentAmountField.text = String.format(getText(R.string.rent_amount_per_month).toString(), leaseDetail.rent.toFloat())
+        }
         rentDurationField.text = leaseDetail.date
         keyDepositField.text = "$50" // placeholder
         petsAllowedField.text = "NO" //if (analyzeDocViewModel.showSafeRent.value!!) "YES" else "NO" // placeholder
@@ -118,6 +123,11 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         for (rentIssue in rentIssues) {
             val warning = layoutInflater.inflate(R.layout.view_warning, warningsContainer, false) as TextView
             warning.text = rentIssue.issue
+            if (rentIssue.isWarning) {
+                warning.compoundDrawableTintList = ContextCompat.getColorStateList(applicationContext, R.color.warningyellow)
+            } else {
+                warning.compoundDrawableTintList = ContextCompat.getColorStateList(applicationContext, R.color.watchoutred)
+            }
             warning.setOnClickListener {
                 val dialog = AlertDialog.Builder(this)
                         .setTitle(rentIssue.title)

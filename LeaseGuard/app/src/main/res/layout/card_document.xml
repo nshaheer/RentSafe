@@ -19,14 +19,15 @@
         android:background="@color/cardBackground"
         android:id="@+id/card_container">
 
-        <ImageView
+        <pl.droidsonroids.gif.GifImageView
             android:id="@+id/card_image"
             android:layout_width="120dp"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
             android:cropToPadding="false"
-            android:scaleType="fitXY"
-            android:src="@drawable/lease_temp" />
+            android:scaleType="fitCenter"
+            android:src="@drawable/spinner"
+        />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -57,7 +58,7 @@
                 android:text="Luxe Waterloo"
                 android:id="@+id/card_title"
                 android:textSize="14dp"
-                android:paddingTop="2dp"
+                android:paddingTop="4dp"
                 android:paddingHorizontal="4dp"
                 android:gravity="center_vertical" />
 

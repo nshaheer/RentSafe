@@ -12,5 +12,6 @@
     <color name="darkgreen">#007d00</color>
     <color name="successgreen">#026323</color>
     <color name="watchoutred">#AF0000</color>
+    <color name="warningyellow">#FFCC00</color>
     <color name="cardBackground">#F6F6F6</color>
 </resources>
