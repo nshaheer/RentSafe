@@ -37,8 +37,6 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
 
     var analyzingDialog: AlertDialog? = null
 
-    var switchy = true
-
     @ExperimentalStdlibApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -174,12 +172,6 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
             // update the intent to hold the newest document key
             intent.putExtra(DOCUMENT_KEY, leaseDetail.id)
         })
-
-        // TODO: remove this, only here for demo
-        headerImage.setOnClickListener {
-            analyzeDocViewModel.showSafeRent.postValue(switchy)
-            switchy = !switchy
-        }
 
         ratingsButton.setOnClickListener {
             val gmmIntentUri = Uri.parse("geo:0,0?q=King Street Towers, 333 King St N, Waterloo, Ontario") // [Property Name, Street Address, City, Province]
