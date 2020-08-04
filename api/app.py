@@ -128,7 +128,7 @@ def submit_lease_for_analysis():
 
         submit_lease_for_analysis = SubmitLeaseForAnalysis(infra["Storage"])
         response = submit_lease_for_analysis.execute(
-            Request({"lease_file_path": filepath})
+            Request({"lease_file_path": filepath, "file_name": filename})
         )
 
         # Celery needs a String instead of an ObjectId
