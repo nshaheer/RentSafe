@@ -51,6 +51,8 @@ class AnalysisService:
             and r["Text"].isnumeric()
             and int(r["Text"]) > 500
         ]
+        # TODO: Average Rent Checking
+
         locations = [r["Text"] for r in all_results if r["Type"] == "LOCATION"]
         organizations = [r["Text"] for r in all_results if r["Type"] == "ORGANIZATION"]
         people = [r["Text"] for r in all_results if r["Type"] == "PERSON"]
