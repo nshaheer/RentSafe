@@ -13,7 +13,7 @@ class SubmitLeaseForAnalysis:
 
         lease_props = {
             "Status": "PENDING_EXTRACTION",
-            "LeaseDocument": request.data["lease_file_path"],
+            "LeaseDocumentName": request.data["file_name"],
             "LeaseDocumentPath": request.data["lease_file_path"],
         }
 
