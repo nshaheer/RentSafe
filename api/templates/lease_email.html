@@ -1,0 +1,91 @@
+<html>
+    <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                margin: 0;
+                padding: 0
+            }
+
+            .top-bar {
+                background-color: #34afed;
+                height: 10px;
+                width: 100%;
+            }
+
+            .rent-safe-title {
+                float: center;
+                font-size: 30px;
+            }
+
+            .issue-summary {
+            font-size: 20px;
+            }
+
+            .issue-summary span {
+                color: #34afed;
+            }
+
+            .issue {
+                margin-top: 15px;
+                margin-bottom: 15px;
+                width: 400px;
+                text-align: center;
+                background: #f5d8d7;
+                border-radius: 5px;
+                border: 2px solid #f5a29f;
+            }
+
+            .issue.warning {
+                background: #f7e9cd;
+                border: 2px solid #f2cf8f;
+            }
+
+            .entities {
+                background: #e0e0de;
+                border-radius: 5px;
+                width: 400px;
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+    </style>
+    <body>
+        <div class="top-bar"></div>
+        <div class="content">
+            <center>
+              <p class="rent-safe-title">
+                 RentSafe Analysis
+              </p>
+              <p class="issue-summary">
+                {{ issue_count }} issue(s) were found in <span>rental_agreement.pdf</span> 
+              </p>
+              {% for issue in Issues %}
+                {% if not issue["IsWarning"] %}
+                <div class="issue">
+                  <p>
+                      {{ issue["Issue"] }}
+                  </p>
+                </div>
+                {% endif %}
+              {% endfor %}
+              {% for issue in Issues %}
+                {% if issue["IsWarning"] %}
+                <div class="issue warning">
+                  <p>
+                    {{ issue["Issue"] }}
+                  </p>
+                </div>
+                {% endif %}
+              {% endfor %}
+              <div class="entities">
+                <table style="text-align: left;">
+                    <p>{{ Address }}</p>
+                    {% if Rent %}
+                    <p>${{ Rent }} / month</p>
+                    {% endif %}
+                    <p>{{ Dates }}</p>
+                </table>
+              </div>
+            </center>
+        </div>
+    </body>
+</html>
