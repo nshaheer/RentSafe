@@ -2,6 +2,7 @@
     <string name="app_name">LeaseGuard</string>
     <string name="watchout">Watch Out!</string>
     <string name="looksgood">Looks Good!</string>
+    <string name="issue_body">RentSafe found 1 potential issue with your lease</string>
     <string name="issues_body">RentSafe found %1$d potential issues with your lease</string>
     <string name="no_issues_body">RentSafe did not find any major issue with your lease</string>
     <string name="lease_details">LEASE DETAILS</string>
@@ -19,6 +20,7 @@
     <string name="pdf">PDF</string>
     <string name="google_drive">Google Drive</string>
     <string name="issues_found">issues found</string>
+    <string name="issue_found">issue found</string>
     <string name="landlord">Landlord</string>
     <string name="property_info">PROPERTY INFO</string>
     <string name="pets_allowed">Pets Allowed</string>
@@ -26,10 +28,10 @@
     <string name="see_ratings_reviews">SEE RATINGS/REVIEWS</string>
     <string name="share_document">Share Document</string>
     <string name="delete_document">Delete Document</string>
-    <string name="processing_document">Processing Document</string>
-    <string name="not_available">Not Available</string>
+    <string name="processing_document">Analyzing Document…</string>
+    <string name="not_available">Rent Not Available</string>
     <string name="action_sign_lease">Save</string>
-    <string name="analyzing">Analyzing...</string>
+    <string name="analyzing">Analyzing…</string>
     <string name="analyzing_body">We’re automatically checking to see if there are any issues with your lease. This may take a few minutes.</string>
     <string name="analyzing_question">In the meantime, could you help us by answering a few questions about your preferences as a tenant?</string>
     <string name="sure_i_don_t_mind">SURE! I DON\'T MIND</string>

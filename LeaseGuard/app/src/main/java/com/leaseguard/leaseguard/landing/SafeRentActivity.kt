@@ -168,12 +168,16 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         class DocumentViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             fun updateUi(leaseDocument: LeaseDocument) {
                 view.setOnClickListener {
-                    val intent = Intent(it.context, AnalyzeDocActivity::class.java)
-                    intent.putExtra(DOCUMENT_KEY, leaseDocument.id)
-                    view.context.startActivity(intent)
+                    if (leaseDocument.status.equals(ANALYZE_COMPLETED)) {
+                        val intent = Intent(it.context, AnalyzeDocActivity::class.java)
+                        intent.putExtra(DOCUMENT_KEY, leaseDocument.id)
+                        view.context.startActivity(intent)
+                    }
                 }
+
                 view.card_title.text = leaseDocument.title
                 view.card_address.text = leaseDocument.address
+
                 if (leaseDocument.status.equals(ANALYZE_COMPLETED)) {
                     if (leaseDocument.rent == 0) {
                         view.card_rent.text = view.context.getString(R.string.not_available)
@@ -195,12 +199,14 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
                     view.card_title.visibility = View.INVISIBLE
                 }
 
-                val issueString : String = view.context.getString(R.string.issues_found)
-                if (leaseDocument.numIssues == 0) {
-                    view.card_issues.text = "no " + issueString
+                val issueString : String = view.context.getString(R.string.issue_found)
+                val issuesString : String = view.context.getString(R.string.issues_found)
+                val numIssues : Int = leaseDocument.numIssues
+                if (numIssues == 0) {
+                    view.card_issues.text = "no " + issuesString
                     view.card_issues.backgroundTintList = ContextCompat.getColorStateList(view.context, R.color.darkgreen)
                 } else {
-                    view.card_issues.text =  leaseDocument.numIssues.toString() + " " + issueString
+                    view.card_issues.text = if (numIssues == 1) numIssues.toString() + " " + issueString else numIssues.toString() + " " + issuesString
                     view.card_issues.backgroundTintList = ContextCompat.getColorStateList(view.context, R.color.watchoutred)
                 }
             }

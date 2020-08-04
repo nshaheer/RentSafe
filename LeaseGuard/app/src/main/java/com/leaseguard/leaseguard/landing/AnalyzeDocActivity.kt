@@ -158,10 +158,11 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
                 issueText.text = getText(R.string.no_issues_body)
                 warningsContainer.visibility = View.GONE
             } else {
+                val numIssues = rentIssues.size
                 headerImage.setImageResource(R.drawable.ic_empty_warning)
                 headerText.text = getText(R.string.watchout)
                 headerText.setTextColor(getColor(R.color.watchoutred))
-                issueText.text = getString(R.string.issues_body, analyzeDocViewModel.rentIssues.value?.size)
+                issueText.text = if (numIssues == 1) getString(R.string.issue_body) else getString(R.string.issues_body, numIssues)
                 warningsContainer.visibility = View.VISIBLE
             }
         })
