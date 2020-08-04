@@ -16,5 +16,22 @@ class SafeRentActivityViewModel @Inject constructor(private val documentReposito
         // TODO: save file to data layer (injected repository)
         // start analyze activity
         startAnalyzeDocActivity.postValue(0)
+
+    }
+
+    fun filePicker(){
+        var chooseFile = Intent(Intent.ACTION_GET_CONTENT)
+        chooseFile.setType("*/*")
+        chooseFile = Intent.createChooser(chooseFile, "Choose a file")
+            //Intent contains data, retrieved in onActivityResult
+            startActivityForResult(chooseFile, PICKFILE_RESULT_CODE)
+        }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data)
+        val uri: Uri = data.getData()
+        val src: String = uri.getPath()
+        var: File pickedFile = new File(Uri)
     }
 }
