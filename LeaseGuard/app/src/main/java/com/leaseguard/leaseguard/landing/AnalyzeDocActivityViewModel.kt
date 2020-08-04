@@ -124,6 +124,7 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
         val analysisService = AnalysisServiceBuilder.createService(AnalysisService::class.java)
         //val leaseDocs = analysisService.sendPdf()
         var path = documentRepository.getPdfUri()?.path?.split(":")
+        Log.d("URI", documentRepository.getPdfUri()?.path)
         var pathStr = path?.get(path.size - 1)
         var file = File(pathStr)
         var pdf : RequestBody? = RequestBody.create("*/*".toMediaTypeOrNull(), file)

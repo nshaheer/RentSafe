@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +26,7 @@ import com.leaseguard.leaseguard.api.SyncService
 import com.leaseguard.leaseguard.models.LeaseDocument
 import kotlinx.android.synthetic.main.activity_saferent.*
 import kotlinx.android.synthetic.main.card_document.view.*
+import java.io.File
 import javax.inject.Inject
 
 
@@ -239,8 +242,9 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
             if (requestCode == PHOTO_CODE) {
                 Toast.makeText(this, "Photo Taken", Toast.LENGTH_SHORT).show()
             } else if (requestCode == PDF_CODE) {
-                val resultFile = data?.data
-                safeRentViewModel.onFileSelected(resultFile)
+                val uri: Uri? = data?.data
+                val file = File(uri?.path) //create path from uri
+                safeRentViewModel.onFileSelected(file.toUri())
             }
         }
     }
