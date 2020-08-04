@@ -33,6 +33,10 @@ class StorageInterface(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def find_leases_for_address(self, address):
+        pass
+
+    @abstractmethod
     def add_questionnaire_submission(self, submission):
         pass
 
@@ -61,6 +65,9 @@ class MemStorage(StorageInterface):
 
     def get_pending_analysis(self):
         return [a for a in self.leases.values() if a["Status"] == "PENDING_ANALYSIS"]
+
+    def find_leases_for_address(self, address):
+        return []
 
     def add_questionnaire_submission(self, submission):
         submission_id = str(uuid4())
@@ -95,6 +102,9 @@ class MongoStorage(StorageInterface):
 
     def get_pending_analysis(self):
         return self.leases.find({"Status": "PENDING_ANALYSIS"})
+
+    def find_leases_for_address(self, address):
+        return self.leases.find({"Locations.0": address, "Amounts.0": {"$gt": 1}})
 
     def add_questionnaire_submission(self, submission):
         return self.questionnaire_submissions.insert_one(submission).inserted_id

@@ -1,5 +1,8 @@
 import re
+from statistics import mean
 from operator import itemgetter
+
+from infrastructure.storage import StorageInterface
 
 _extras = re.compile("[$,\s]")
 
@@ -55,37 +58,44 @@ class AnalysisService:
         }
 
     @staticmethod
-    def analyze_recognition_results(results):
+    def _is_rent_higher_than_avg(rents, locations, storage: StorageInterface):
+        if locations and rents:
+            leases = list(storage.find_leases_for_address(locations[0]))
+
+            if leases:
+                current_rents = [l["Amounts"][0] for l in leases]
+                avg = mean(current_rents)
+
+                return rents[0] > avg
+
+        return False
+
+    @staticmethod
+    def analyze_recognition_results(results, storage: StorageInterface):
         all_results = []
         for result in results:
             all_results.extend([e for e in result["Entities"] if e["Score"] > 0.75])
 
-        results_in_order = sorted(all_results, key=itemgetter("BeginOffset"))
-
         amounts = [
-            r["Text"]
-            for r in results_in_order
+            int(_extras.sub("", r["Text"]))
+            for r in all_results
             if r["Type"] == "QUANTITY" and r["Score"] > 0.9 and _is_rent(r["Text"])
         ]
         dates = [
-            r["Text"]
-            for r in results_in_order
-            if r["Type"] == "DATE" and r["Score"] > 0.95
+            r["Text"] for r in all_results if r["Type"] == "DATE" and r["Score"] > 0.95
         ]
         locations = [
             r["Text"]
-            for r in results_in_order
+            for r in all_results
             if r["Type"] == "LOCATION" and r["Score"] > 0.9
         ]
         organizations = [
             r["Text"]
-            for r in results_in_order
+            for r in all_results
             if r["Type"] == "ORGANIZATION" and r["Score"] > 0.9
         ]
         people = [
-            r["Text"]
-            for r in results_in_order
-            if r["Type"] == "PERSON" and r["Score"] > 0.9
+            r["Text"] for r in all_results if r["Type"] == "PERSON" and r["Score"] > 0.9
         ]
 
         return {
@@ -94,4 +104,7 @@ class AnalysisService:
             "Locations": locations,
             "Organizations": organizations,
             "People": people,
+            "IsRentHigherThanCurrentAverage": AnalysisService._is_rent_higher_than_avg(
+                amounts, locations, storage
+            ),
         }
