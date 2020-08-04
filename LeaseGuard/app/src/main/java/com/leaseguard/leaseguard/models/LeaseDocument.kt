@@ -17,6 +17,7 @@ class LeaseDocument(
         val numIssues: Int,
         val issueDetails : String,
         val status: String,
-        val thumbnail : ByteArray
+        val thumbnail : ByteArray,
+        val documentName : String
 
         )
