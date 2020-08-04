@@ -54,14 +54,15 @@ def handle_exception(e):
     return response
 
 
-bucket = "rent-safe"
-
-
 def init_infrastucture():
     storage = MongoStorage()
     extractor = GoogleVisionExtractor()
-    recognizer = AWSComprehendEntityRecognizer(bucket)
-    classifier = AwsComprehendClassifier(bucket)
+    recognizer = AWSComprehendEntityRecognizer(app.config["AWS_S3_BUCKET"])
+    classifier = AwsComprehendClassifier(
+        app.config["AWS_S3_BUCKET"],
+        app.config["AWS_COMPREHEND_ROLE_ARN"],
+        app.config["AWS_COMPREHEND_CLASSIFIER_ARN"],
+    )
 
     return {
         "Storage": storage,

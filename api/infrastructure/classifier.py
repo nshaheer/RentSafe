@@ -40,13 +40,13 @@ class DummyClassifier(ClassifierInterface):
 
 
 class AwsComprehendClassifier(ClassifierInterface):
-    def __init__(self, bucket):
+    def __init__(self, bucket, role_arn, classifier_arn):
 
-        self.role_arn = "arn:aws:iam::005097899236:role/RentSafeAWSComprehendRole"
-        self.classifier_arn = "arn:aws:comprehend:ca-central-1:005097899236:document-classifier/cs446-training"
+        self.bucket = bucket
+        self.role_arn = role_arn
+        self.classifier_arn = classifier_arn
 
         self._id = str(uuid4())
-        self.bucket = bucket
 
         # User: simar-cs446-automation
         # User ARN: arn:aws:iam::005097899236:user/simar-cs446-automation
