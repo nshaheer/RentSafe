@@ -1,3 +1,20 @@
+import re
+from operator import itemgetter
+
+_extras = re.compile("[$,\s]")
+
+
+def _is_rent(amt_str):
+
+    stripped = _extras.sub("", amt_str)
+
+    if stripped.isnumeric():
+        int_amt = int(stripped)
+        return int_amt > 500 and int_amt <= 3000
+
+    return False
+
+
 class AnalysisService:
     PETS_PROHIBITED_CLASS = "Pets Prohibited"
     GUESTS_PROHIBITED_CLASS = "Guests Prohibited"
@@ -43,19 +60,33 @@ class AnalysisService:
         for result in results:
             all_results.extend([e for e in result["Entities"] if e["Score"] > 0.75])
 
-        dates = [r["Text"] for r in all_results if r["Type"] == "DATE"]
+        results_in_order = sorted(all_results, key=itemgetter("BeginOffset"))
+
         amounts = [
             r["Text"]
-            for r in all_results
-            if r["Type"] == "QUANTITY"
-            and r["Text"].isnumeric()
-            and int(r["Text"]) > 500
+            for r in results_in_order
+            if r["Type"] == "QUANTITY" and r["Score"] > 0.9 and _is_rent(r["Text"])
         ]
-        # TODO: Average Rent Checking
-
-        locations = [r["Text"] for r in all_results if r["Type"] == "LOCATION"]
-        organizations = [r["Text"] for r in all_results if r["Type"] == "ORGANIZATION"]
-        people = [r["Text"] for r in all_results if r["Type"] == "PERSON"]
+        dates = [
+            r["Text"]
+            for r in results_in_order
+            if r["Type"] == "DATE" and r["Score"] > 0.95
+        ]
+        locations = [
+            r["Text"]
+            for r in results_in_order
+            if r["Type"] == "LOCATION" and r["Score"] > 0.9
+        ]
+        organizations = [
+            r["Text"]
+            for r in results_in_order
+            if r["Type"] == "ORGANIZATION" and r["Score"] > 0.9
+        ]
+        people = [
+            r["Text"]
+            for r in results_in_order
+            if r["Type"] == "PERSON" and r["Score"] > 0.9
+        ]
 
         return {
             "Dates": dates,

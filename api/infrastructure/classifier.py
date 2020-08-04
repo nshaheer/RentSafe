@@ -43,7 +43,7 @@ class AwsComprehendClassifier(ClassifierInterface):
     def __init__(self, bucket):
 
         self.role_arn = "arn:aws:iam::005097899236:role/RentSafeAWSComprehendRole"
-        self.classifier_arn = "arn:aws:comprehend:ca-central-1:005097899236:document-classifier/cs446-training"
+        self.classifier_arn = "arn:aws:comprehend:ca-central-1:005097899236:document-classifier/RentalClassifier-v1-0-0"
 
         self._id = str(uuid4())
         self.bucket = bucket
