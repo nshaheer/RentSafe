@@ -20,6 +20,7 @@ from use_cases.submit_text_for_analysis import SubmitTextForAnalysis
 from use_cases.process_pending_analysis import ProcessPendingAnalysis
 from use_cases.get_analysis_results import GetAnalysis
 from use_cases.get_lease_thumbnail import GetLeaseThumbnail
+from use_cases.email_lease_analysis import EmailLeaseAnalysis
 
 from utils import allowed_file
 
@@ -147,7 +148,12 @@ def submit_lease_for_analysis():
 def email_lease_analysis(lease_id):
     infra = init_infrastucture()
 
-    return {"status": "SUCCESS"}
+    email_lease = EmailLeaseAnalysis(infra["Storage"])
+    response = email_lease.execute(
+        Request({"lease_id": lease_id, "to_email": request.json["email"]})
+    )
+
+    return response.data
 
 
 @app.route("/leases/<lease_id>", methods=["GET"])

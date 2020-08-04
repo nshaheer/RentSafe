@@ -61,5 +61,7 @@ class EmailService:
         try:
             sg = SendGridAPIClient(EmailService.SG_API_KEY)
             sg.send(message)
+            return True
         except Exception as e:
             print(e)
+            return False
