@@ -11,17 +11,17 @@ ISSUES = {
         "Description": "Landlords are not legally allowed to prevent guests from staying overnight",
         "IsWarning": False,
     },
+    "SecurityDeposit": {
+        "Title": "Security Deposit Requried",
+        "Issue": "A security deposit is required",
+        "Description": "A landlord cannot ask a tenant for a Security Deposit",
+        "IsWarning": False,
+    },
     "AverageRent": {
         "Title": "Rent Higher Than Average",
         "Issue": "Your rent seems higher than average for this property",
         "Description": "Your rent for this property seems higher than average based on our historical records",
-        "IsWarning": False,
-    },
-    "SecurityDeposit": {
-        "Title": "A security deposit is required",
-        "Issue": "Security Deposit Requried",
-        "Description": "A landlord cannot ask a tenant for a Security Deposit",
-        "IsWarning": False,
+        "IsWarning": True,
     },
     "RentDeposit": {
         "Title": "A rent deposit is required",
@@ -30,8 +30,8 @@ ISSUES = {
         "IsWarning": True,
     },
     "KeyDeposit": {
-        "Title": "A key deposit is required",
-        "Issue": "Key Deposit Required",
+        "Title": "Key Deposit Required",
+        "Issue": "A key deposit is required",
         "Description": "While a landlord has the right to ask for a key deposit, it must be refundable (i.e. returned to you at the end of the lease period)",
         "IsWarning": True,
     },
