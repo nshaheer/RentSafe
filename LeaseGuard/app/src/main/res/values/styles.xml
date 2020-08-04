@@ -24,8 +24,11 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/darkblack</item>
     </style>
+    <style name="BaseText.Text16">
+        <item name="android:textSize">16sp</item>
+    </style>
     <style name="BaseText.Text14">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
     <style name="BaseText.Text12">
         <item name="android:textSize">12sp</item>
@@ -36,4 +39,14 @@
     <style name="BaseText.Text10">
         <item name="android:textSize">10sp</item>
     </style>
+    <style name="BaseText.TitleText">
+        <item name="android:textSize">
+            36sp
+        </item>
+        <item name="android:textColor">
+            #019AE8
+        </item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

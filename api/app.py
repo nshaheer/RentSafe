@@ -20,7 +20,6 @@ from use_cases.submit_text_for_analysis import SubmitTextForAnalysis
 from use_cases.process_pending_analysis import ProcessPendingAnalysis
 from use_cases.get_analysis_results import GetAnalysis
 from use_cases.get_lease_thumbnail import GetLeaseThumbnail
-from use_cases.email_lease_analysis import EmailLeaseAnalysis
 
 from utils import allowed_file
 
@@ -54,15 +53,14 @@ def handle_exception(e):
     return response
 
 
+bucket = "rent-safe"
+
+
 def init_infrastucture():
     storage = MongoStorage()
     extractor = GoogleVisionExtractor()
-    recognizer = AWSComprehendEntityRecognizer(app.config["AWS_S3_BUCKET"])
-    classifier = AwsComprehendClassifier(
-        app.config["AWS_S3_BUCKET"],
-        app.config["AWS_COMPREHEND_ROLE_ARN"],
-        app.config["AWS_COMPREHEND_CLASSIFIER_ARN"],
-    )
+    recognizer = AWSComprehendEntityRecognizer(bucket)
+    classifier = AwsComprehendClassifier(bucket)
 
     return {
         "Storage": storage,
@@ -130,7 +128,7 @@ def submit_lease_for_analysis():
 
         submit_lease_for_analysis = SubmitLeaseForAnalysis(infra["Storage"])
         response = submit_lease_for_analysis.execute(
-            Request({"lease_file_path": filepath, "file_name": filename})
+            Request({"lease_file_path": filepath})
         )
 
         # Celery needs a String instead of an ObjectId
@@ -149,19 +147,16 @@ def submit_lease_for_analysis():
 def email_lease_analysis(lease_id):
     infra = init_infrastucture()
 
-    email_lease = EmailLeaseAnalysis(infra["Storage"])
-    response = email_lease.execute(
-        Request({"lease_id": lease_id, "to_email": request.json["email"]})
-    )
-
-    return response.data
+    return {"status": "SUCCESS"}
 
 
 @app.route("/leases/<lease_id>", methods=["GET"])
 def get_analysis_results(lease_id):
     infra = init_infrastucture()
 
-    get_analysis = GetAnalysis(infra["Storage"])
+    get_analysis = GetAnalysis(
+        infra["Storage"], infra["Classifier"], infra["Recognizer"]
+    )
     response = get_analysis.execute(Request({"lease_id": lease_id}))
 
     return Response(json.dumps(response.data, default=str), mimetype="application/json")

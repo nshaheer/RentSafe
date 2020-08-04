@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/headerImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_empty_analyze_loading"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/headerText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"/>
+
+    <TextView
+        android:id="@+id/headerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/analyzing"
+        style="@style/BaseText.TitleText"
+        app:layout_constraintTop_toBottomOf="@id/headerImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bodyText1"
+        android:layout_marginTop="@dimen/generic_margin_24dp" />
+
+    <TextView
+        android:id="@+id/bodyText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/analyzing_body"
+        style="@style/BaseText.Text14"
+        app:layout_constraintTop_toBottomOf="@id/headerText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bodyText2"
+        android:layout_marginTop="@dimen/generic_margin_16dp"
+        android:paddingStart="@dimen/generic_margin_16dp"
+        android:paddingEnd="@dimen/generic_margin_16dp"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:id="@+id/bodyText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/analyzing_question"
+        style="@style/BaseText.Text14"
+        app:layout_constraintTop_toBottomOf="@id/bodyText1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/accept_button"
+        android:layout_marginTop="@dimen/generic_margin_16dp"
+        android:paddingStart="@dimen/generic_margin_16dp"
+        android:paddingEnd="@dimen/generic_margin_16dp"
+        android:textAlignment="center"/>
+
+    <Button
+        android:id="@+id/accept_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bodyText2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/reject_button"
+        android:layout_marginTop="32dp"
+        android:padding="@dimen/generic_margin_8dp"
+        android:text="@string/sure_i_don_t_mind" />
+    
+    <TextView
+        android:id="@+id/reject_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/accept_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="@dimen/generic_margin_8dp"
+        style="@style/BaseText.Text12"
+        android:text="@string/no_thanks" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,5 @@
 package com.leaseguard.leaseguard.models;
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -17,6 +16,7 @@ class LeaseDocument(
         val numIssues: Int,
         val issueDetails : String,
         val status: String,
-        val thumbnail : ByteArray
+        val thumbnail : ByteArray,
+        val documentName : String
 
         )

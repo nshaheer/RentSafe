@@ -1,17 +1,22 @@
 package com.leaseguard.leaseguard.landing
 
+import android.Manifest
+import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +26,7 @@ import com.leaseguard.leaseguard.api.SyncService
 import com.leaseguard.leaseguard.models.LeaseDocument
 import kotlinx.android.synthetic.main.activity_saferent.*
 import kotlinx.android.synthetic.main.card_document.view.*
+import java.io.File
 import javax.inject.Inject
 
 
@@ -28,6 +34,7 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
 
     companion object {
         val DOCUMENT_KEY = "documentKey"
+        val ANALYZE_COMPLETED = "COMPLETED"
     }
 
     private val PHOTO_CODE = 1
@@ -35,6 +42,12 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
     private val PDF_CODE = 3
     private val GOOGLE_DRIVE_CODE = 4
     private val ANALYZE_DOC_CODE = 5
+
+    private val REQUEST_EXTERNAL_STORAGE = 1
+    private val PERMISSIONS_STORAGE = arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
 
     @Inject
     lateinit var safeRentViewModel : SafeRentActivityViewModel
@@ -95,7 +108,6 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         safeRentViewModel.documentUpdated.observe(this, Observer { documents ->
             leaseList.clear()
             leaseList.addAll(documents)
-            Log.d("testdoc", documents.size.toString())
             viewAdapter.notifyDataSetChanged()
             if (leaseList.isNotEmpty()) {
                 noDocumentContainer.visibility = View.GONE
@@ -115,9 +127,22 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         recyclerDocumentList.layoutManager = viewManager
         recyclerDocumentList.adapter = viewAdapter
 
+        verifyStoragePermissions(this)
         startService(Intent(applicationContext, SyncService::class.java))
     }
 
+    fun verifyStoragePermissions(activity: Activity?) {
+        // Check if we have write permission
+        val permission = ActivityCompat.checkSelfPermission(activity!!, Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    activity,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            )
+        }
+    }
     override fun onResume() {
         super.onResume()
     }
@@ -149,10 +174,27 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
                 }
                 view.card_title.text = leaseDocument.title
                 view.card_address.text = leaseDocument.address
-                view.card_rent.text = "$" + leaseDocument.rent.toString() + "/mo"
-                view.card_date.text = leaseDocument.date
-                var thumbnail = BitmapFactory.decodeByteArray(leaseDocument.thumbnail, 0, leaseDocument.thumbnail.size);
-                view.card_image.setImageBitmap(thumbnail)
+                if (leaseDocument.status.equals(ANALYZE_COMPLETED)) {
+                    if (leaseDocument.rent == 0) {
+                        view.card_rent.text = view.context.getString(R.string.not_available)
+                    } else {
+                        view.card_rent.text = "$" + leaseDocument.rent.toString() + "/mo"
+                    }
+                    view.card_date.text = leaseDocument.date
+                    var thumbnail = BitmapFactory.decodeByteArray(leaseDocument.thumbnail, 0, leaseDocument.thumbnail.size);
+                    view.card_image.setImageBitmap(thumbnail)
+                    view.card_image.scaleType = ImageView.ScaleType.FIT_XY
+                    view.card_issues.visibility = View.VISIBLE
+                    view.card_date.visibility = View.VISIBLE
+                    view.card_title.visibility = View.VISIBLE
+                } else {
+                    view.card_rent.text = view.context.getString(R.string.processing_document)
+                    view.card_address.text = leaseDocument.documentName
+                    view.card_issues.visibility = View.INVISIBLE
+                    view.card_date.visibility = View.INVISIBLE
+                    view.card_title.visibility = View.INVISIBLE
+                }
+
                 val issueString : String = view.context.getString(R.string.issues_found)
                 if (leaseDocument.numIssues == 0) {
                     view.card_issues.text = "no " + issueString
@@ -200,8 +242,9 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
             if (requestCode == PHOTO_CODE) {
                 Toast.makeText(this, "Photo Taken", Toast.LENGTH_SHORT).show()
             } else if (requestCode == PDF_CODE) {
-                val resultFile = data?.data
-                safeRentViewModel.onFileSelected(resultFile)
+                val uri: Uri? = data?.data
+                val file = File(uri?.path) //create path from uri
+                safeRentViewModel.onFileSelected(file.toUri())
             }
         }
     }

@@ -24,8 +24,8 @@ ISSUES = {
         "IsWarning": True,
     },
     "RentDeposit": {
-        "Title": "Rent Deposit Required",
         "Issue": "A rent deposit is req*uired",
+        "Title": "Rent Deposit Required",
         "Description": "While a landlord has the right to ask for a rent deposit, it cannot be for more than one month's worth of rent",
         "IsWarning": True,
     },
