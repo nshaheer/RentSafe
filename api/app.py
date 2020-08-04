@@ -150,6 +150,8 @@ def submit_lease_for_analysis():
 
 @app.route("/leases/<lease_id>/email", methods=["POST"])
 def email_lease_analysis(lease_id):
+    infra = init_infrastucture()
+
     email_lease = EmailLeaseAnalysis(infra["Storage"])
     response = email_lease.execute(
         Request({"lease_id": lease_id, "to_email": request.json["email"]})
