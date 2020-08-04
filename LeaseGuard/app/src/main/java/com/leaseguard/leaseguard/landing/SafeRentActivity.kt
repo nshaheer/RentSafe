@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -16,7 +15,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.TypedArrayUtils.getText
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -107,7 +105,6 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         safeRentViewModel.documentUpdated.observe(this, Observer { documents ->
             leaseList.clear()
             leaseList.addAll(documents)
-            Log.d("testdoc", documents.size.toString())
             viewAdapter.notifyDataSetChanged()
             if (leaseList.isNotEmpty()) {
                 noDocumentContainer.visibility = View.GONE

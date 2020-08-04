@@ -145,7 +145,7 @@ class GoogleVisionExtractor(ExtractorInteface):
         if get_file_type(document_path) != "pdf":
             tmp_path = "/tmp/{}.pdf".format(uuid4())
             try:
-                ImageConversionService.convert(document_path, tmp_path)
+                ImageConversionService().convert(document_path, tmp_path)
                 document_path = tmp_path
             except Exception as _:
                 raise ExtractorImageConversionFailed()

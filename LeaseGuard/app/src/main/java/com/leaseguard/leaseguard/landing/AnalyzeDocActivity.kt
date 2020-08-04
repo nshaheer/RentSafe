@@ -5,10 +5,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.view.setMargins
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
@@ -18,9 +21,17 @@ import com.leaseguard.leaseguard.landing.SafeRentActivity.Companion.DOCUMENT_KEY
 import com.leaseguard.leaseguard.models.LeaseDocument
 import com.leaseguard.leaseguard.models.RentIssue
 import kotlinx.android.synthetic.main.activity_analyzedoc.*
+import kotlinx.android.synthetic.main.activity_analyzedoc.headerImage
+import kotlinx.android.synthetic.main.activity_analyzedoc.headerText
+import kotlinx.android.synthetic.main.activity_analyzedoc_survey.*
+import kotlinx.android.synthetic.main.activity_analyzedoc_survey_permission.accept_button
+import kotlinx.android.synthetic.main.activity_analyzedoc_survey_permission.reject_button
 import javax.inject.Inject
 
 class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
+    private val EMAIL_CODE = 1
+    private val SURVEY_DONE_KEY = "SURVEY_DONE"
+
     @Inject
     lateinit var analyzeDocViewModel: AnalyzeDocActivityViewModel
 
@@ -31,9 +42,6 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
     @ExperimentalStdlibApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_analyzedoc)
-        analyzeDocActivity.visibility = View.GONE
-
         supportActionBar?.title = "Analyze Document"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -41,23 +49,106 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         if (documentKey != null) {
             analyzeDocViewModel.useDocument(documentKey)
         } else {
-            analyzeDocViewModel.doAnalysis()
+            initUploadingDialogListeners()
+            analyzeDocViewModel.uploadLease()
         }
-        analyzeDocViewModel.showErrorDialog.observe(this, Observer {
 
+        // When analysis is ready, show analysis details view
+        analyzeDocViewModel.analysisIsReady.observe(this, Observer {
+            if (it) {
+                showAnalysisCompleteView()
+            } else {
+                showAnalyzingView()
+            }
+        })
+    }
+
+    private fun initUploadingDialogListeners() {
+        analyzeDocViewModel.showErrorDialog.observe(this, Observer {
+            // TODO: show error dialog if something goes wrong when uploading
         })
 
         //TODO: save state and restore
-        analyzeDocViewModel.isLoading.observe(this, Observer { isLoading ->
+        analyzeDocViewModel.isUploading.observe(this, Observer { isLoading ->
             if (isLoading) {
-                showLoading()
+                showUploadingDialog()
             } else {
-                hideLoading()
+                hideUploadingDialog()
             }
         })
         analyzeDocViewModel.endActivity.observe(this, Observer {
             showErrorThenExit()
         })
+    }
+
+    private fun showAnalyzingView() {
+        analyzeDocViewModel.surveyIsComplete.observe(this, Observer {
+            this.getPreferences(MODE_PRIVATE).edit {
+                this.putBoolean(SURVEY_DONE_KEY, true)
+            }
+        })
+        if (this.getPreferences(MODE_PRIVATE).getBoolean(SURVEY_DONE_KEY, false)) {
+            finish()
+        } else {
+            setContentView(R.layout.activity_analyzedoc_survey_permission)
+            accept_button.setOnClickListener {
+                showSurveyView()
+            }
+            reject_button.setOnClickListener {
+                finish()
+            }
+        }
+    }
+
+    private val surveyQuestions = listOf(
+            R.string.survey_question1,
+            R.string.survey_question2,
+            R.string.survey_question3,
+            R.string.survey_question4
+    )
+
+    // Assuming restarting survey when destroyed
+    private fun showSurveyView() {
+        var questionCounter = 0
+        val answers = MutableList<Boolean?>(surveyQuestions.size) { null }
+        setContentView(R.layout.activity_analyzedoc_survey)
+        findViewById<Button>(R.id.accept_button).setOnClickListener {
+            answers[questionCounter] = true
+            questionCounter++
+            if (questionCounter >= surveyQuestions.size) {
+                analyzeDocViewModel.surveyFinished(answers)
+                showSurveyFinishedView()
+                return@setOnClickListener
+            }
+            bodyText.text = getText(surveyQuestions[questionCounter])
+        }
+        findViewById<Button>(R.id.reject_button).setOnClickListener {
+            answers[questionCounter] = false
+            questionCounter++
+            if (questionCounter >= surveyQuestions.size) {
+                analyzeDocViewModel.surveyFinished(answers)
+                showSurveyFinishedView()
+                return@setOnClickListener
+            }
+            bodyText.text = getText(surveyQuestions[questionCounter])
+        }
+    }
+
+    private fun showSurveyFinishedView() {
+        setContentView(R.layout.activity_analyzedoc_survey_permission)
+        findViewById<ImageView>(R.id.headerImage).setImageDrawable(getDrawable(R.drawable.ic_empty_thank_you))
+        findViewById<TextView>(R.id.headerText).text = getText(R.string.thank_you)
+        findViewById<TextView>(R.id.bodyText1).text = getText(R.string.survey_end_body1)
+        findViewById<TextView>(R.id.bodyText2).text = getText(R.string.survey_end_body2)
+        findViewById<Button>(R.id.accept_button).setText(R.string.go_back_home)
+        findViewById<Button>(R.id.accept_button).setOnClickListener {
+            finish()
+        }
+        findViewById<TextView>(R.id.reject_button).visibility = View.GONE
+    }
+
+    private fun showAnalysisCompleteView() {
+        setContentView(R.layout.activity_analyzedoc)
 
         analyzeDocViewModel.rentIssues.observe(this, Observer { rentIssues ->
             if (rentIssues.size == 0) {
@@ -201,10 +292,10 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
                 .show()
     }
 
-    private fun showLoading() {
+    private fun showUploadingDialog() {
         analyzingDialog = AlertDialog.Builder(this)
-                .setTitle("Analyzing document...")
-                .setMessage("We are automatically checking to see if there are any issues with your lease")
+                .setTitle("Uploading document...")
+                .setMessage("We are uploading your lease documents so we can carefully analyze them")
                 .setPositiveButton("CANCEL") { _, _ ->
                     analyzeDocViewModel.cancelAnalysis()
                 }
@@ -213,8 +304,7 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         analyzingDialog?.show()
     }
 
-    private fun hideLoading() {
-        analyzeDocActivity.visibility = View.VISIBLE
+    private fun hideUploadingDialog() {
         analyzingDialog?.dismiss()
     }
 

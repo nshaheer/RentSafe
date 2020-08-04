@@ -1,11 +1,7 @@
 package com.leaseguard.leaseguard.api
 
 import com.leaseguard.leaseguard.models.ApiResponse
-import com.leaseguard.leaseguard.models.LeaseDocument
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import okhttp3.Response
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -23,4 +19,8 @@ interface AnalysisService {
 
     @GET("leases/{id}")
     fun getLease(@Path("id") id : String) : Call<ApiResponse>
+
+    @Headers("Content-type: application/json")
+    @POST("questionnaires")
+    fun sendSurveyResult(@Body body: String) : Call<String>
 }

@@ -1,6 +1,5 @@
 package com.leaseguard.leaseguard.landing
 
-
 import android.util.Base64
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -26,27 +25,12 @@ import retrofit2.Response
 import java.io.File
 import javax.inject.Inject
 
-
 class AnalyzeDocActivityViewModel @Inject constructor(private val documentRepository: DocumentRepository) : ViewModel() {
-    val rentIsSafe = false
-    val dummyDocument = LeaseDocument("N/A","Luxe Waterloo", "333 King Street N", 600, "May 1, 2017 - Aug 31, 2017", 2, "", "", ByteArray(0), "")
-    val dummyIssues = listOf(
-            RentIssue(
-                    "Rent deposit more than single month rent",
-                    "Rent Deposits",
-                    "Landlords are only legally allowed to ask for a rent deposit equal to a single month rent",
-                    false
-            ),
-            RentIssue(
-                    "Pets prohibited",
-                    "Pet Policies",
-                    "Landlords are only able to prohibit pets if they cause significant property damage",
-                    false
-            )
-    )
+    var analysisIsReady = MutableLiveData<Boolean>()
+    var surveyIsComplete = MutableLiveData<Int>()
 
-    // show loading dialog when set to true
-    var isLoading: MutableLiveData<Boolean> = MutableLiveData()
+    // show uploading dialog when set to true
+    var isUploading: MutableLiveData<Boolean> = MutableLiveData()
     // end activity when notified
     var endActivity: MutableLiveData<Int> = MutableLiveData()
     // determines whether or not the lease looks safe
@@ -59,10 +43,10 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
     var showErrorDialog: MutableLiveData<Int> = MutableLiveData()
 
     fun useDocument(key: String) {
-
         val document = documentRepository.getDocuments().value?.find { it.id == key }
         document?.let {
-            isLoading.postValue(false)
+            isUploading.postValue(false)
+            analysisIsReady.postValue(true)
             leaseDetails.postValue(it)
             updateRentIssuesWithJsonString(it.issueDetails)
         }?: run {
@@ -70,10 +54,42 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
         }
     }
 
+    fun surveyFinished(surveyResult: MutableList<Boolean?>) {
+        val jsonResult = generateSurveyResultJson(surveyResult)
+        postSurveyResult(jsonResult)
+    }
+
+    private fun generateSurveyResultJson(surveyResult: MutableList<Boolean?>): String {
+        val stringBuilder = StringBuilder()
+        stringBuilder.append("{")
+        for (i in 0 until surveyResult.size) {
+            val str = "\"question$i\" : \"${surveyResult.get(i)}\""
+            stringBuilder.append(str)
+            if (i < surveyResult.size - 1) {
+                stringBuilder.append(",")
+            }
+        }
+        stringBuilder.append("}")
+        return stringBuilder.toString()
+    }
+
+    private fun postSurveyResult(result: String) {
+        val analysisService = AnalysisServiceBuilder.createService(AnalysisService::class.java)
+        analysisService.sendSurveyResult(result).enqueue(object : Callback<String> {
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                // TODO: handle failure
+            }
+
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                surveyIsComplete.postValue(0)
+            }
+        })
+    }
+
     /**
      * Launching a new coroutine to insert the data in a non-blocking way
      */
-    private fun insertDocument(leaseDocument: LeaseDocument) = viewModelScope.launch(Dispatchers.IO) {
+    fun insertDocument(leaseDocument: LeaseDocument) = viewModelScope.launch(Dispatchers.IO) {
         documentRepository.deleteAll()
         documentRepository.addDocument(leaseDocument)
     }
@@ -92,14 +108,17 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
         rentIssues.postValue(newRentIssues)
     }
 
+    /**
+     * Upload the lease for analysis.
+     */
     @ExperimentalStdlibApi
-    fun doAnalysis() {
-        isLoading.postValue(true)
-        // TODO: Make an API call
+    fun uploadLease() {
+        isUploading.postValue(true)
+        // TODO: Make an API call for uploading lease
         val thread = Thread(Runnable {
             Thread.sleep(5000)
-            isLoading.postValue(false)
-            showSafeRent.postValue(rentIsSafe)
+            isUploading.postValue(false)
+            analysisIsReady.postValue(false)    // analysis is not ready immediately
         })
         thread.start()
         val analysisService = AnalysisServiceBuilder.createService(AnalysisService::class.java)

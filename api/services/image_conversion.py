@@ -3,8 +3,7 @@ from PIL import Image
 
 
 class ImageConversionService:
-    @staticmethod
-    def convert(img_path, pdf_path):
+    def convert(self, img_path, pdf_path):
 
         image = Image.open(img_path)
         pdf_bytes = img2pdf.convert(image.filename)

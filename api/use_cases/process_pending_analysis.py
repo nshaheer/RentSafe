@@ -31,9 +31,7 @@ class ProcessPendingAnalysis:
             r_results = self.recognizer.get_results(analysis["EntityRecognitionJobId"])
 
             c_analysis = AnalysisService.analyze_classification_results(c_results)
-            r_analysis = AnalysisService.analyze_recognition_results(
-                r_results, self.storage
-            )
+            r_analysis = AnalysisService.analyze_recognition_results(r_results)
 
             lease_update = {}
             lease_update.update(c_analysis)
