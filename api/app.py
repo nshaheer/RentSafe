@@ -162,7 +162,7 @@ def email_lease_analysis(lease_id):
 
     email_lease = EmailLeaseAnalysis(infra["Storage"])
     response = email_lease.execute(
-        Request({"lease_id": lease_id, "to_email": request.json["email"]})
+        Request({"lease_id": lease_id, "to_email": request.args["email"]})
     )
 
     return response.data
