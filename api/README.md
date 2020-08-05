@@ -1,51 +1,51 @@
 ## API
 
-There are 2 main goals of the Public API:
+There are 4 main goals of the Public API:
 
 ### Submit for analysis
-Submit paragraphs for analysis. This involves compiling txt files for AWS Comprehend, uploading them to S3, starting AWS Comprehend jobs and storing metadata in MongoDB.
+Submit document for analysis. This basically queues a document for text and thumbnail extraction which further queues it up for classification
+and entity recognition.
 
 ### Get analysis
 Get the analysis for a given lease.
 
-If the lease analysis is complete then we need to simply get the results of the analysis in MongoDB and return them.
+### Email analysis
+Email the analysis of a given lease to a recipient.
 
-If not, engage `services` to fetch Entity Recognition and Classification job results, analyze them and update the lease in MongoDB.
+### Collect Questionnaire Responses
+Collect Questionnaire responses by users.
 
-The above 2 goals are hence encapsulated in the `use_cases` folder. These usecases, providing the interface exposed to the public via HTTP, utilize `infrastructure` and `services` as needed.
+
+Hence the primary entrypoint to the application is via `use_cases` which are either exposed to the public via the REST API or executed via `tasks`. The above 4 goals are hence encapsulated in the `use_cases` folder. All usecases utilize `infrastructure` and `services` as needed.
+
+## Use Cases
+1. EmailLeaseAnalysis
+2. GetAnalysisResults
+3. GetLeaseThumbnail
+4. ProcessPendingAnalysis
+5. SubmitLeaseForAnalysis
+6. SubmitTextForAnalysis
 
 ## Infrastructure
-3rd party components critical to RentSafe.
-
-### Entity Recognizer
-A minimal interface wrapping the AWS `boto3` library and it's AWS Comprehend interface for entity recognition.
-
-### Classifier
-A minimal interface wrapping the AWS `boto3` library and it's AWS Comprehend interface for custom classification.
-
-### Storage
-A minimal interface wrapping the MongoDB Python client for adding and updating leases.
+1. Storage
+2. Classifier
+3. EntityRecogizer
+4. Extractor
 
 ## Services
-
-### Analyze Entity Recognition Results
-Process Entity Recognition results in the context of a lease.
-
-### Analyze Classification Results
-Process Classification results in the context of a lease.
+1. EmailService
+2. ThumbnailService
+3. AnalysisService
+4. FormatterService
+5. ImageConversionService
 
 ## Local Development
-`cd api && export FLASK_APP=app.py && export FLASK_ENV=development && python3 -m flask run`
-
-To run a faster API that returns mock data for local testing, `cd api && export FLASK_APP=dummy_rest.py && export FLASK_ENV=development && python3 -m flask run`
-
-A Postman export is available in `docs/` to visualize the exact requests and responses.
+`docker-compose up`
+`docker exec -it api bash`
 
 ## Background Tasks
 `celery worker -A app.celery --beat -l INFO`
 
-## Server Access
-`ssh -i .aws/RentSafe.pem ubuntu@ec2-15-223-126-32.ca-central-1.compute.amazonaws.com`
 
 ### Redis Setup
 Install using:
@@ -57,61 +57,3 @@ Update `/etc/hosts` by adding `127.0.0.1 redis` to it.
 ### Gunicorn and Nginx Setup
 https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-gunicorn-and-nginx-on-ubuntu-18-04
 
-## Making API requests from Android
-Currently there are 2 endpoints exposed:
-
-1. `POST /lease`
-
-The following is sample Java code
-
-```
-Unirest.setTimeouts(0, 0);
-HttpResponse<String> response = Unirest.post("http://15.223.126.32/leases")
-  .header("Content-Type", "application/json")
-  .field("file", new File("/Users/salman/Downloads/333 Sample Lease.pdf"))
-  .asString();
-```
-
-Returns the following sample response
-
-```
-{
-    "Lease": {
-        "Address": "",
-        "Dates": "",
-        "Id": "5f228c566e20e2f22708b9f2",
-        "Issues": [],
-        "Rent": "",
-        "Status": "PENDING_EXTRACTION",
-        "Thumbnail": "",
-        "Title": ""
-    }
-}
-```
-
-2. `GET /lease/<LEASE-ID>`
-
-The following isn sample Java code
-
-```
-Unirest.setTimeouts(0, 0);
-HttpResponse<String> response = Unirest.get("http://15.223.126.32/leases//5f2289a36e20e2f22708b9ef")
-  .asString();
-```
-
-Returns the following sample response
-
-```
-{
-    "Lease": {
-        "Address": "",
-        "Dates": "",
-        "Id": "5f2289a36e20e2f22708b9ef",
-        "Issues": [],
-        "Rent": "",
-        "Status": "PENDING_ANALYSIS",
-        "Thumbnail": "b'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'",
-        "Title": ""
-    }
-}
-```
