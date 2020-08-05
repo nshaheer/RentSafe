@@ -1,8 +1,8 @@
 package com.leaseguard.leaseguard.di
 
-import com.leaseguard.leaseguard.landing.AnalyzeDocActivity
-import com.leaseguard.leaseguard.landing.SafeRentActivity
-import com.leaseguard.leaseguard.landing.SafeRentActivityModule
+import com.leaseguard.leaseguard.views.AnalyzeDocActivity
+import com.leaseguard.leaseguard.views.SafeRentActivity
+import com.leaseguard.leaseguard.modules.SafeRentActivityModule
 import dagger.Module
 
 import dagger.android.ContributesAndroidInjector
