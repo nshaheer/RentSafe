@@ -22,16 +22,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.leaseguard.leaseguard.R
 import com.leaseguard.leaseguard.api.SyncService
-import com.leaseguard.leaseguard.viewmodels.SafeRentActivityViewModel
 import com.leaseguard.leaseguard.models.LeaseDocument
+import com.leaseguard.leaseguard.viewmodels.SafeRentActivityViewModel
 import kotlinx.android.synthetic.main.activity_saferent.*
 import kotlinx.android.synthetic.main.card_document.view.*
 import java.io.File
 import javax.inject.Inject
 
-
+/**
+ * Activity that displays list of lease documents and lets the user upload a new document.
+ */
 class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
-
     companion object {
         val DOCUMENT_KEY = "documentKey"
         val ANALYZE_COMPLETED = "COMPLETED"
@@ -61,6 +62,7 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_saferent)
 
+        // Set the action bar
         supportActionBar?.title = "RentSafe"
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -131,7 +133,10 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
         startService(Intent(applicationContext, SyncService::class.java))
     }
 
-    fun verifyStoragePermissions(activity: Activity?) {
+    /**
+     * Verify if we have the required permissions and request it if we don't
+     */
+    private fun verifyStoragePermissions(activity: Activity?) {
         // Check if we have write permission
         val permission = ActivityCompat.checkSelfPermission(activity!!, Manifest.permission.READ_EXTERNAL_STORAGE)
         if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -143,9 +148,6 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
             )
         }
     }
-    override fun onResume() {
-        super.onResume()
-    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -155,13 +157,15 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item?.itemId) {
             android.R.id.home -> {
-                // TODO: handle the menu button press
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    /**
+     * Adapter for the RecyclerView that contains lease cards
+     */
     class DocumentAdapter(private val myLeaseDocumentList: ArrayList<LeaseDocument>) :
             RecyclerView.Adapter<DocumentAdapter.DocumentViewHolder>() {
 
@@ -185,7 +189,7 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
                         view.card_rent.text = "$" + leaseDocument.rent.toString() + "/mo"
                     }
                     view.card_date.text = leaseDocument.date
-                    var thumbnail = BitmapFactory.decodeByteArray(leaseDocument.thumbnail, 0, leaseDocument.thumbnail.size);
+                    val thumbnail = BitmapFactory.decodeByteArray(leaseDocument.thumbnail, 0, leaseDocument.thumbnail.size)
                     view.card_image.setImageBitmap(thumbnail)
                     view.card_image.scaleType = ImageView.ScaleType.FIT_XY
                     view.card_issues.visibility = View.VISIBLE
