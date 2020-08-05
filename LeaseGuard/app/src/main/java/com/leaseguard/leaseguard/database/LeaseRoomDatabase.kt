@@ -6,7 +6,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.leaseguard.leaseguard.models.LeaseDocument
 
-// Annotates class to be a Room Database with a table (entity) of the LeaseDocument class
+/**
+ * Annotates class to be a Room Database for SQLite with a table (entity) of the LeaseDocument class
+ */
 @Database(entities = arrayOf(LeaseDocument::class), version = 3, exportSchema = false)
 public abstract class LeaseRoomDatabase : RoomDatabase() {
 
@@ -18,7 +20,10 @@ public abstract class LeaseRoomDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: LeaseRoomDatabase? = null
 
-        fun getDatabase(context: Context): LeaseRoomDatabase {
+       /**
+        * Provide singleton database instance
+        */
+       fun getDatabase(context: Context): LeaseRoomDatabase {
             val tempInstance = INSTANCE
             if (tempInstance != null) {
                 return tempInstance

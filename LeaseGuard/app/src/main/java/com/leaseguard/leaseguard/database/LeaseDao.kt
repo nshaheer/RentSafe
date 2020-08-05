@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.leaseguard.leaseguard.models.LeaseDocument
 
-// Data Access Object for lease_table queries
+/**
+ * Data Access Object for lease_table queries
+ */
 @Dao
 interface LeaseDao {
     @Query("SELECT * from lease_table ORDER BY id ASC")

@@ -5,9 +5,10 @@ import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 
-
+/**
+ * Interface utilized by Retrofit Http Client Library to call endpoints of the AnalysisService backend
+ */
 interface AnalysisService {
-
     @Multipart
     @POST("leases")
     fun sendPdf(
