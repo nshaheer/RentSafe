@@ -16,10 +16,10 @@ import androidx.core.view.setMargins
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
 import com.leaseguard.leaseguard.R
-import com.leaseguard.leaseguard.viewmodels.AnalyzeDocActivityViewModel
-import com.leaseguard.leaseguard.views.SafeRentActivity.Companion.DOCUMENT_KEY
 import com.leaseguard.leaseguard.models.LeaseDocument
 import com.leaseguard.leaseguard.models.RentIssue
+import com.leaseguard.leaseguard.viewmodels.AnalyzeDocActivityViewModel
+import com.leaseguard.leaseguard.views.SafeRentActivity.Companion.DOCUMENT_KEY
 import kotlinx.android.synthetic.main.activity_analyzedoc.*
 import kotlinx.android.synthetic.main.activity_analyzedoc.headerImage
 import kotlinx.android.synthetic.main.activity_analyzedoc.headerText
@@ -28,9 +28,18 @@ import kotlinx.android.synthetic.main.activity_analyzedoc_survey_permission.acce
 import kotlinx.android.synthetic.main.activity_analyzedoc_survey_permission.reject_button
 import javax.inject.Inject
 
+/**
+ * View that contains UI for lease analysis flow.
+ * Shows survey view if the user has not completed survey before, then shows lease analysis details.
+ */
 class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
-    private val EMAIL_CODE = 1
     private val SURVEY_DONE_KEY = "SURVEY_DONE"
+    private val surveyQuestions = listOf(
+            R.string.survey_question1,
+            R.string.survey_question2,
+            R.string.survey_question3,
+            R.string.survey_question4
+    )
 
     @Inject
     lateinit var analyzeDocViewModel: AnalyzeDocActivityViewModel
@@ -43,6 +52,7 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         supportActionBar?.title = "Analyze Document"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        // get document key to retrieve document selected from previous activity.
         val documentKey: String? = intent.getStringExtra(DOCUMENT_KEY)
         if (documentKey != null) {
             analyzeDocViewModel.useDocument(documentKey)
@@ -61,12 +71,10 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         })
     }
 
+    /**
+     * Initialize subscribers for uploading event
+     */
     private fun initUploadingDialogListeners() {
-        analyzeDocViewModel.showErrorDialog.observe(this, Observer {
-            // TODO: show error dialog if something goes wrong when uploading
-        })
-
-        //TODO: save state and restore
         analyzeDocViewModel.isUploading.observe(this, Observer { isLoading ->
             if (isLoading) {
                 showUploadingDialog()
@@ -79,6 +87,10 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         })
     }
 
+    /**
+     * When analysis is in progress, prepare survey UI.
+     * If user has already completed it, just close the activity.
+     */
     private fun showAnalyzingView() {
         analyzeDocViewModel.surveyIsComplete.observe(this, Observer {
             this.getPreferences(MODE_PRIVATE).edit {
@@ -98,14 +110,9 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         }
     }
 
-    private val surveyQuestions = listOf(
-            R.string.survey_question1,
-            R.string.survey_question2,
-            R.string.survey_question3,
-            R.string.survey_question4
-    )
-
-    // Assuming restarting survey when destroyed
+    /**
+     * Initialize survey UI
+     */
     private fun showSurveyView() {
         var questionCounter = 0
         val answers = MutableList<Boolean?>(surveyQuestions.size) { null }
@@ -132,6 +139,9 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         }
     }
 
+    /**
+     * Change the UI to show survey finished screen
+     */
     private fun showSurveyFinishedView() {
         setContentView(R.layout.activity_analyzedoc_survey_permission)
         findViewById<ImageView>(R.id.headerImage).setImageDrawable(getDrawable(R.drawable.ic_empty_thank_you))
@@ -145,9 +155,13 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         findViewById<TextView>(R.id.reject_button).visibility = View.GONE
     }
 
+    /**
+     * If analysis is complete, show analysis result view.
+     */
     private fun showAnalysisCompleteView() {
         setContentView(R.layout.activity_analyzedoc)
 
+        // subscribe to rentIssues updated event
         analyzeDocViewModel.rentIssues.observe(this, Observer { rentIssues ->
             if (rentIssues.size == 0) {
                 headerImage.setImageResource(R.drawable.ic_empty_success)
@@ -186,6 +200,9 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         }
     }
 
+    /**
+     * Update the lease details section
+     */
     private fun populateLeaseDetails(leaseDetail: LeaseDocument) {
         // Lease Details Section
         if (leaseDetail.rent == 0) {
@@ -203,6 +220,9 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         landlordField.text = leaseDetail.title
     }
 
+    /**
+     * Update the rent issues fields
+     */
     private fun populateRentIssues(rentIssues: List<RentIssue>) {
         warningsContainer.removeAllViews()
         for (rentIssue in rentIssues) {
@@ -222,7 +242,7 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
                         }
                         .setCancelable(false)
                         .create()
-                dialog?.show()
+                dialog.show()
             }
             warningsContainer.addView(warning)
         }
@@ -275,6 +295,9 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
         }
     }
 
+    /**
+     * Show the error dialog then exit
+     */
     private fun showErrorThenExit() {
         AlertDialog.Builder(this)
                 .setTitle("Invalid document")
