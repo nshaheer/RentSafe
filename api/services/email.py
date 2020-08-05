@@ -22,7 +22,6 @@ class EmailService:
 
     @staticmethod
     def _get_email_html(lease):
-        formatted = LeaseFormatterService.format_lease_for_android(lease)
 
         return (
             jinja2.Environment(
@@ -31,18 +30,25 @@ class EmailService:
                 lstrip_blocks=True,
             )
             .get_template("lease_email.html")
-            .render(issue_count=len(formatted["Issues"]), **formatted)
+            .render(issue_count=len(lease["Issues"]), **lease)
             .replace("\n", "")
         )
 
     @staticmethod
     def email_lease_analysis(to_email, lease):
 
-        content = EmailService._get_email_html(lease)
+        formatted = LeaseFormatterService.format_lease_for_android(lease)
+        subject = "RentSafe - "
+        if len(formatted["Issues"]):
+            subject += "{} issues(s) found".format(len(formatted["Issues"]))
+        else:
+            subject += "No issues found"
+
+        content = EmailService._get_email_html(formatted)
         message = Mail(
             from_email="stariqmi@uwaterloo.ca",
             to_emails=to_email,
-            subject="RentSafe - Lease Analysis ({})".format(str(lease["_id"])),
+            subject=subject,
             html_content=content,
         )
 
