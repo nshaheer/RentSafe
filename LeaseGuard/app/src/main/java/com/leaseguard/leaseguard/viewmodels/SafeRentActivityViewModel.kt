@@ -1,4 +1,4 @@
-package com.leaseguard.leaseguard.landing
+package com.leaseguard.leaseguard.viewmodels
 
 import android.net.Uri
 import androidx.lifecycle.LiveData

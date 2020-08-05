@@ -1,7 +1,5 @@
 package com.leaseguard.leaseguard.api;
 
-import android.app.Application;
-import android.app.Service;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -18,14 +16,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.leaseguard.leaseguard.database.LeaseDao;
 import com.leaseguard.leaseguard.database.LeaseRoomDatabase;
-import com.leaseguard.leaseguard.landing.SafeRentActivity;
 import com.leaseguard.leaseguard.models.ApiResponse;
 import com.leaseguard.leaseguard.models.LeaseDocument;
 
 import java.util.List;
 
-import kotlin.coroutines.Continuation;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

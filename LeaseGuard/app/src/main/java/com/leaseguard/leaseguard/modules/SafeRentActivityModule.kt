@@ -1,5 +1,7 @@
-package com.leaseguard.leaseguard.landing
+package com.leaseguard.leaseguard.modules
 
+import com.leaseguard.leaseguard.viewmodels.AnalyzeDocActivityViewModel
+import com.leaseguard.leaseguard.viewmodels.SafeRentActivityViewModel
 import com.leaseguard.leaseguard.repositories.DocumentRepository
 import dagger.Module
 import dagger.Provides
