@@ -119,6 +119,18 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
         rentIssues.postValue(newRentIssues)
     }
 
+    fun sendEmail(documentId: String, email: String) {
+        val analysisService = AnalysisServiceBuilder.createService(AnalysisService::class.java)
+        analysisService.sendEmail(documentId, email).enqueue(object: Callback<Any> {
+            override fun onFailure(call: Call<Any>, t: Throwable) {
+                t.printStackTrace()
+            }
+            override fun onResponse(call: Call<Any>, response: Response<Any>) {
+                Log.d("EMAIL", "${response.message()} ${response.code()} ${response.body()}")
+            }
+        })
+    }
+
     /**
      * Upload the lease for analysis.
      */

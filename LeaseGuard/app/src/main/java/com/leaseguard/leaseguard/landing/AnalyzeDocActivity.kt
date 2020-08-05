@@ -246,7 +246,7 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
                         .setTitle("Email Document")
                         .setView(view)
                         .setPositiveButton("SEND") { _, _ ->
-                            // TODO: Make API call to send lease_id, email_address
+                            analyzeDocViewModel.sendEmail(intent.getStringExtra(DOCUMENT_KEY), view.text.toString())
                         }
                         .setNeutralButton("CANCEL", null)
                         .show()

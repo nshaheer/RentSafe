@@ -23,4 +23,7 @@ interface AnalysisService {
     @Headers("Content-type: application/json")
     @POST("questionnaires")
     fun sendSurveyResult(@Body body: String) : Call<String>
+
+    @POST("leases/{documentId}/email")
+    fun sendEmail(@Path(value = "documentId") documentId: String, @Query("email") email: String) : Call<Any>
 }
