@@ -1,4 +1,4 @@
-package com.leaseguard.leaseguard.landing
+package com.leaseguard.leaseguard.viewmodels
 
 import android.util.Base64
 import android.util.Log

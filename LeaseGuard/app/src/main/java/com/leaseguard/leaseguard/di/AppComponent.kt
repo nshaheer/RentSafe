@@ -1,8 +1,8 @@
 package com.leaseguard.leaseguard.di
 
-import com.leaseguard.leaseguard.AppModule
+import com.leaseguard.leaseguard.modules.AppModule
 import com.leaseguard.leaseguard.LeaseGuardApplication
-import com.leaseguard.leaseguard.landing.SafeRentActivityModule
+import com.leaseguard.leaseguard.modules.SafeRentActivityModule
 import dagger.Component
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule

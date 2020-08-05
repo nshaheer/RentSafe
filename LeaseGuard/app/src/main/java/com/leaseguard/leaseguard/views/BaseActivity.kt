@@ -1,4 +1,4 @@
-package com.leaseguard.leaseguard
+package com.leaseguard.leaseguard.views
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModel

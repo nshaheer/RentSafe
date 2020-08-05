@@ -16,15 +16,15 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".landing.SignLeaseActivity"></activity>
-        <activity android:name=".landing.SafeRentActivity">
+        <activity android:name=".views.SignLeaseActivity"></activity>
+        <activity android:name=".views.SafeRentActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".landing.AnalyzeDocActivity"></activity>
+        <activity android:name=".views.AnalyzeDocActivity"></activity>
         <service android:name=".api.SyncService"/>
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"

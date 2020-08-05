@@ -1,4 +1,4 @@
-package com.leaseguard.leaseguard.landing
+package com.leaseguard.leaseguard.views
 
 import android.content.Intent
 import android.net.Uri
@@ -15,9 +15,9 @@ import androidx.core.content.edit
 import androidx.core.view.setMargins
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Observer
-import com.leaseguard.leaseguard.BaseActivity
 import com.leaseguard.leaseguard.R
-import com.leaseguard.leaseguard.landing.SafeRentActivity.Companion.DOCUMENT_KEY
+import com.leaseguard.leaseguard.viewmodels.AnalyzeDocActivityViewModel
+import com.leaseguard.leaseguard.views.SafeRentActivity.Companion.DOCUMENT_KEY
 import com.leaseguard.leaseguard.models.LeaseDocument
 import com.leaseguard.leaseguard.models.RentIssue
 import kotlinx.android.synthetic.main.activity_analyzedoc.*

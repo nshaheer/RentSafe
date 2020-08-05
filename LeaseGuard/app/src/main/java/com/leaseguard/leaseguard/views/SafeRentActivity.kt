@@ -1,4 +1,4 @@
-package com.leaseguard.leaseguard.landing
+package com.leaseguard.leaseguard.views
 
 import android.Manifest
 import android.app.Activity
@@ -20,9 +20,9 @@ import androidx.core.net.toUri
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.leaseguard.leaseguard.BaseActivity
 import com.leaseguard.leaseguard.R
 import com.leaseguard.leaseguard.api.SyncService
+import com.leaseguard.leaseguard.viewmodels.SafeRentActivityViewModel
 import com.leaseguard.leaseguard.models.LeaseDocument
 import kotlinx.android.synthetic.main.activity_saferent.*
 import kotlinx.android.synthetic.main.card_document.view.*
@@ -219,7 +219,7 @@ class SafeRentActivity : BaseActivity<SafeRentActivityViewModel>() {
 
         // Create new views (invoked by the layout manager)
         override fun onCreateViewHolder(parent: ViewGroup,
-                                        viewType: Int): DocumentAdapter.DocumentViewHolder {
+                                        viewType: Int): DocumentViewHolder {
             // create a new view
             val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.card_document, parent, false) as View
