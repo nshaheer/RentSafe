@@ -8,6 +8,10 @@ import com.leaseguard.leaseguard.R
 import com.simplify.ink.InkView
 import dagger.android.support.DaggerAppCompatActivity
 
+/**
+ * Simple implementation of signature drawing feature.
+ * Use [InkView] to let user paint signature on to the screen.
+ */
 class SignLeaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +39,6 @@ class SignLeaseActivity : AppCompatActivity() {
                 return true
             }
             R.id.action_sign -> {
-                // TODO: Save actual signature
                 setResult(DaggerAppCompatActivity.RESULT_OK)
                 finish()
                 return true

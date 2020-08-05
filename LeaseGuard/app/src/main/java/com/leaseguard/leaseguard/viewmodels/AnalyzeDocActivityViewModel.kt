@@ -25,6 +25,10 @@ import retrofit2.Response
 import java.io.File
 import javax.inject.Inject
 
+/**
+ * ViewModel for that handles business logic for AnalyzeDocActivity.
+ * Fetches data from [documentRepository] and [AnalysisService] and streams data to its View
+ */
 class AnalyzeDocActivityViewModel @Inject constructor(private val documentRepository: DocumentRepository) : ViewModel() {
     var analysisIsReady = MutableLiveData<Boolean>()
     var surveyIsComplete = MutableLiveData<Int>()
@@ -37,9 +41,10 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
     var rentIssues: MutableLiveData<List<RentIssue>> = MutableLiveData()
     // populate ui with lease details
     var leaseDetails: MutableLiveData<LeaseDocument> = MutableLiveData()
-    // if invalid document is provided, show error then exit
-    var showErrorDialog: MutableLiveData<Int> = MutableLiveData()
 
+    /**
+     * sets the current document to [key]
+     */
     fun useDocument(key: String) {
         val document = documentRepository.getDocuments().value?.find { it.id == key }
         document?.let {
@@ -47,16 +52,21 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
             analysisIsReady.postValue(true)
             leaseDetails.postValue(it)
             updateRentIssuesWithJsonString(it.issueDetails)
-        }?: run {
-            showErrorDialog.postValue(0)
         }
     }
 
+    /**
+     * logic for when survey is finished.
+     * Send the survey result to the server
+     */
     fun surveyFinished(surveyResult: MutableList<Boolean?>) {
         val jsonResult = generateSurveyResultJson(surveyResult)
         postSurveyResult(jsonResult)
     }
 
+    /**
+     * convert [surveyResult] list into json format
+     */
     private fun generateSurveyResultJson(surveyResult: MutableList<Boolean?>): String {
         val stringBuilder = StringBuilder()
         stringBuilder.append("{")
@@ -71,11 +81,14 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
         return stringBuilder.toString()
     }
 
+    /**
+     * make a network call to post survey result to server
+     */
     private fun postSurveyResult(result: String) {
         val analysisService = AnalysisServiceBuilder.createService(AnalysisService::class.java)
         analysisService.sendSurveyResult(result).enqueue(object : Callback<String> {
             override fun onFailure(call: Call<String>, t: Throwable) {
-                // TODO: handle failure
+                t.printStackTrace()
             }
 
             override fun onResponse(call: Call<String>, response: Response<String>) {
@@ -97,11 +110,8 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
      */
     fun deleteDocument() = viewModelScope.launch(Dispatchers.IO) {
         val document = leaseDetails.value
-
         if (document != null) {
             documentRepository.deleteDocument(document)
-        } else {
-            // TODO: Handle error case
         }
     }
 
@@ -110,15 +120,18 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
      * and updates the view with our new data
      */
     fun updateRentIssuesWithJsonString(str : String) {
-        var newRentIssues : ArrayList<RentIssue> = ArrayList()
-        var jsonArray : JSONArray = JSONArray(str)
+        val newRentIssues : ArrayList<RentIssue> = ArrayList()
+        val jsonArray = JSONArray(str)
         for (i in 0 until jsonArray.length()) {
-            var jsonObj : JSONObject = jsonArray.getJSONObject(i)
+            val jsonObj : JSONObject = jsonArray.getJSONObject(i)
             newRentIssues.add(RentIssue(jsonObj.getString("Issue"), jsonObj.getString("Title"), jsonObj.getString("Description"), jsonObj.getBoolean("IsWarning")))
         }
         rentIssues.postValue(newRentIssues)
     }
 
+    /**
+     * Makes an api request to the server. Server then sends email to the recipient [email]
+     */
     fun sendEmail(documentId: String, email: String) {
         val analysisService = AnalysisServiceBuilder.createService(AnalysisService::class.java)
         analysisService.sendEmail(documentId, email).enqueue(object: Callback<Any> {
@@ -144,11 +157,11 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
         })
         thread.start()
         val analysisService = AnalysisServiceBuilder.createService(AnalysisService::class.java)
-        var path = documentRepository.getPdfUri()?.path?.split(":")
+        val path = documentRepository.getPdfUri()?.path?.split(":")
         Log.d("URI", documentRepository.getPdfUri()?.path)
-        var pathStr = path?.get(path.size - 1)
-        var file = File(pathStr)
-        var pdf : RequestBody? = RequestBody.create("*/*".toMediaTypeOrNull(), file)
+        val pathStr = path?.get(path.size - 1)
+        val file = File(pathStr)
+        val pdf : RequestBody? = RequestBody.create("*/*".toMediaTypeOrNull(), file)
         val fileToUpload = pdf?.let { MultipartBody.Part.createFormData("file", file.name, it) }
         if (fileToUpload != null) {
             Log.d("PDF", file.name + " :: " + fileToUpload.toString())
@@ -156,7 +169,7 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
                 override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                     if (response.isSuccessful) {
                         // When data is available, populate LiveData
-                        var jsonObject : JsonObject = response.body()?.lease ?: JsonObject()
+                        val jsonObject : JsonObject = response.body()?.lease ?: JsonObject()
                         Log.d("LEASE-RESPONSE", jsonObject.toString())
                         Log.d("LEASE", response.toString())
                         var thumbnail = jsonObject.get("Thumbnail").asString
@@ -164,9 +177,9 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
                             // b' has to be removed from the string prior to the encoding
                             thumbnail = thumbnail.substring(2, thumbnail.length - 1)
                         }
-                        var thumbnailByteArray = Base64.decode(thumbnail, Base64.DEFAULT)
-                        var jsonArray = jsonObject.getAsJsonArray("Issues")
-                        var document = LeaseDocument(jsonObject.get("Id").asString, jsonObject.get("Title").asString,
+                        val thumbnailByteArray = Base64.decode(thumbnail, Base64.DEFAULT)
+                        val jsonArray = jsonObject.getAsJsonArray("Issues")
+                        val document = LeaseDocument(jsonObject.get("Id").asString, jsonObject.get("Title").asString,
                                 jsonObject.get("Address").asString, jsonObject.get("Rent").asInt, jsonObject.get("Dates").asString,
                                 jsonArray.size(), jsonArray.toString(), jsonObject.get("Status").asString, thumbnailByteArray, jsonObject.get("DocumentName").asString)
                         updateRentIssuesWithJsonString(jsonArray.toString())
