@@ -25,25 +25,27 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-// Polling Service for Analysis Completions
+/**
+ * Polling Service for Analysis Completions, it will update the DocumentList LiveData and
+ * SQLite database upon successful completion from the Analysis returned from Analysis Service
+ */
 public class SyncService extends LifecycleService {
-    // Polling every 20 seconds
+    // Polling every 60 seconds
     public static final long DEFAULT_SYNC_INTERVAL = 60 * 1000;
     private static final String ANALYZE_COMPLETED = "COMPLETED";
     private Handler handler;
     private LeaseDao leaseDao;
     private Call<ApiResponse> leaseCheck;
+    // Create a new runnable in charge of the actual API call to the Analysis Service asynchronously
     private Runnable getLeaseCompletion = new Runnable() {
         @Override
         public void run() {
             leaseCheck.clone().enqueue(new Callback<ApiResponse>() {
-
+                // If response is successful parse the json result and store the result in SQLite
                 @Override
                 public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                     if (response.isSuccessful()) {
-                        Log.d("POLLING", response.body().lease.toString());
                         JsonObject jsonObject = response.body().lease;
-                        Log.d("LEASE-RESPONSE", jsonObject.toString());
                         if (ANALYZE_COMPLETED.equals(jsonObject.get("Status").getAsString())) {
                             Log.d("LEASE-RESPONSE", "COMPLETED");
                             String thumbnail = jsonObject.get("Thumbnail").toString();
@@ -51,7 +53,7 @@ public class SyncService extends LifecycleService {
                             if (thumbnail.length() > 2) {
                                 thumbnail = thumbnail.substring(2, thumbnail.length() - 1);
                             }
-
+                            // Decode encoded thumbnail and store byte array in database
                             byte[] thumbnailByteArray = Base64.decode(thumbnail, Base64.DEFAULT);
                             JsonArray jsonArray = jsonObject.getAsJsonArray("Issues");
                             LeaseDocument document = new LeaseDocument(jsonObject.get("Id").getAsString(), jsonObject.get("Title").getAsString(),
@@ -67,25 +69,27 @@ public class SyncService extends LifecycleService {
                 @Override
                 public void onFailure(Call<ApiResponse> call, Throwable t) {
                     Log.d("POLLING", "FAILED" + t.getLocalizedMessage());
-                    System.out.println("Network Error :: " + t.getLocalizedMessage());
                 }
             });
         }
     };
 
+    // Runnable that will be started on a new thread to query for updates of incomplete analysis
     private Runnable runnableService = new Runnable() {
         @Override
         public void run() {
-            Log.d("POLLING", "STARTED");
             AnalysisService analysisService = AnalysisServiceBuilder.createService(AnalysisService.class);
+            // Because retrieving Loading Leases from the LeaseDao is asynchronous as it queries SQLite,
+            // we utilize the observer to identify when the retrieval is complete
             LiveData<List<LeaseDocument>> leases = leaseDao.getLoadingLeases();
             leases.observe(SyncService.this, new Observer<List<LeaseDocument>>() {
                 @Override
                 public void onChanged(@Nullable List<LeaseDocument> leases) {
-                    Log.d("POLLING", "OBSERVABLE");
+                    // If leases were able to be retrieved
                     if (leases != null) {
+                        // For each loading lease, send a query to check for completion
                         for (LeaseDocument lease : leases) {
-                            Log.d("POLLING", lease.getId());
+                            // Call analysis service to obtain anaylsis status of the lease
                             leaseCheck = analysisService.getLease(lease.getId());
                             AsyncTask.execute(getLeaseCompletion);
                         }
