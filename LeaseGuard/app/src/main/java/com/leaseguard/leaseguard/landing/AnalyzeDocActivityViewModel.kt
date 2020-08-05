@@ -33,8 +33,6 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
     var isUploading: MutableLiveData<Boolean> = MutableLiveData()
     // end activity when notified
     var endActivity: MutableLiveData<Int> = MutableLiveData()
-    // determines whether or not the lease looks safe
-    var showSafeRent: MutableLiveData<Boolean> = MutableLiveData()
     // populate the rent issues section
     var rentIssues: MutableLiveData<List<RentIssue>> = MutableLiveData()
     // populate ui with lease details
@@ -92,6 +90,19 @@ class AnalyzeDocActivityViewModel @Inject constructor(private val documentReposi
     fun insertDocument(leaseDocument: LeaseDocument) = viewModelScope.launch(Dispatchers.IO) {
 //        documentRepository.deleteAll() // Uncomment this to delete all stored documents
         documentRepository.addDocument(leaseDocument)
+    }
+
+    /**
+     * Launching a new coroutine to delete the data in a non-blocking way
+     */
+    fun deleteDocument() = viewModelScope.launch(Dispatchers.IO) {
+        val document = leaseDetails.value
+
+        if (document != null) {
+            documentRepository.deleteDocument(document)
+        } else {
+            // TODO: Handle error case
+        }
     }
 
     /**

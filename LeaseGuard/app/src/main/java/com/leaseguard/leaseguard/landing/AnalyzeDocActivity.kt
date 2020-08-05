@@ -267,7 +267,8 @@ class AnalyzeDocActivity : BaseActivity<AnalyzeDocActivityViewModel>() {
                 return true
             }
             R.id.action_delete -> {
-                // TODO: Implement delete individual lease documents
+                analyzeDocViewModel.deleteDocument()
+                finish()
                 return true
             }
             else -> super.onOptionsItemSelected(item)
