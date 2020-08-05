@@ -8,6 +8,9 @@ from flask import Flask, request, Response, redirect, url_for, json
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import HTTPException
 
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+
 from infrastructure.classifier import AwsComprehendClassifier
 from infrastructure.storage import MongoStorage
 from infrastructure.entity_recognizer import AWSComprehendEntityRecognizer
@@ -27,6 +30,11 @@ from utils import allowed_file
 from celery_app import make_celery
 
 from config import Config
+
+sentry_sdk.init(
+    dsn="https://ad90b18ea8cc45408888226a015512a6@o429995.ingest.sentry.io/5377755",
+    integrations=[FlaskIntegration()],
+)
 
 app = Flask(__name__)
 app.config.from_object(Config())

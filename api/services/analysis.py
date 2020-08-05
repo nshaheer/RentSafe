@@ -4,7 +4,7 @@ from operator import itemgetter
 
 from infrastructure.storage import StorageInterface
 
-_extras = re.compile("[$,\s]")
+_extras = re.compile("[$,\sa-zA-Z_]")
 
 
 def _is_rent(amt_str):
@@ -79,7 +79,7 @@ class AnalysisService:
         amounts = [
             int(_extras.sub("", r["Text"]))
             for r in all_results
-            if r["Type"] == "QUANTITY" and r["Score"] > 0.9 and _is_rent(r["Text"])
+            if r["Type"] == "QUANTITY" and r["Score"] > 0.75 and _is_rent(r["Text"])
         ]
         dates = [
             r["Text"] for r in all_results if r["Type"] == "DATE" and r["Score"] > 0.95

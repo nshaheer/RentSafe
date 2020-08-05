@@ -15,3 +15,4 @@ redis==3.5.3
 Pillow==7.2.0
 img2pdf==0.3.6
 sendgrid
+sentry-sdk[flask]==0.16.2
